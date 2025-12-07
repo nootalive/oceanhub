@@ -1008,9 +1008,52 @@ const setupWaveSway = () => {
     logger.info('🌊 Wave sway animation initialized');
 };
 
+// ===== COOKIE MODAL MANAGER =====
+const cookieManager = {
+    init() {
+        const modal = document.getElementById('cookieModal');
+        const toggleBtn = document.getElementById('toggleDetails');
+        const detailsContent = document.getElementById('detailsContent');
+        const acceptBtn = document.getElementById('acceptCookies');
+        const closeBtn = document.getElementById('closeCookieModal');
+        
+        // Check if user already accepted
+        if (!localStorage.getItem('oh_cookies_accepted')) {
+            setTimeout(() => {
+                modal.style.display = 'flex';
+            }, 1000);
+        }
+        
+        // Toggle details
+        toggleBtn?.addEventListener('click', () => {
+            toggleBtn.classList.toggle('active');
+            detailsContent.classList.toggle('active');
+        });
+        
+        // Accept cookies
+        const acceptCookies = () => {
+            localStorage.setItem('oh_cookies_accepted', 'true');
+            localStorage.setItem('oh_cookies_date', new Date().toISOString());
+            modal.style.display = 'none';
+            logger.info('✅ Cookies accepted');
+        };
+        
+        acceptBtn?.addEventListener('click', acceptCookies);
+        closeBtn?.addEventListener('click', acceptCookies);
+        
+        // Close on backdrop click
+        modal?.addEventListener('click', (e) => {
+            if (e.target === modal) acceptCookies();
+        });
+    }
+};
+
 // ===== EVENT LISTENERS SETUP =====
 document.addEventListener('DOMContentLoaded', async () => {
     logger.info('🚀 OceanHub loaded');
+    
+    // Initialize cookie modal
+    cookieManager.init();
     
     // Dev panel buttons
     document.getElementById('closeDevPanel')?.addEventListener('click', () => {

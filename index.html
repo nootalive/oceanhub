@@ -44,6 +44,85 @@
     <!-- Debug Overlay (griglia e info viewport) -->
     <div id="debugOverlay" class="debug-overlay"></div>
 
+    <!-- Cookie Consent Modal -->
+    <div id="cookieModal" class="cookie-modal" style="display: none;">
+        <div class="cookie-modal-content">
+            <div class="cookie-header">
+                <div class="cookie-icon">
+                    <i class="fas fa-cookie-bite"></i>
+                </div>
+                <h2>Utilizzo dei Cookie</h2>
+                <button id="closeCookieModal" class="cookie-close-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <p class="cookie-description">
+                Utilizziamo cookie tecnici essenziali per garantire il corretto funzionamento del sito
+            </p>
+
+            <div class="cookie-info-box">
+                <i class="fas fa-info-circle"></i>
+                <div>
+                    <strong>Cookie necessari.</strong> Questi cookie sono indispensabili per login, sicurezza e funzionalità base. Non raccolgono dati personali.
+                </div>
+            </div>
+
+            <div class="cookie-details">
+                <button class="cookie-details-toggle" id="toggleDetails">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Dettagli tecnici</span>
+                    <i class="fas fa-chevron-down toggle-icon"></i>
+                </button>
+                
+                <div class="cookie-details-content" id="detailsContent">
+                    <div class="cookie-item">
+                        <i class="fas fa-lock"></i>
+                        <div class="cookie-item-info">
+                            <strong>Session Token</strong>
+                            <p>Mantiene il login attivo (90 giorni)</p>
+                        </div>
+                    </div>
+                    
+                    <div class="cookie-item">
+                        <i class="fas fa-shield-halved"></i>
+                        <div class="cookie-item-info">
+                            <strong>CSRF Token</strong>
+                            <p>Protezione da attacchi informatici</p>
+                        </div>
+                    </div>
+                    
+                    <div class="cookie-item">
+                        <i class="fas fa-user-check"></i>
+                        <div class="cookie-item-info">
+                            <strong>OAuth State</strong>
+                            <p>Autenticazione Discord sicura</p>
+                        </div>
+                    </div>
+
+                    <div class="security-badges">
+                        <span class="security-badge">HttpOnly</span>
+                        <span class="security-badge">Secure</span>
+                        <span class="security-badge">SameSite</span>
+                        <span class="security-badge">Crittografati</span>
+                    </div>
+
+                    <a href="#privacy" class="cookie-policy-link">
+                        Leggi la Cookie Policy completa →
+                    </a>
+                </div>
+            </div>
+
+            <button class="cookie-accept-btn" id="acceptCookies">
+                Accetta e Continua
+            </button>
+
+            <p class="cookie-footer-text">
+                Chiudendo o continuando accetti l'utilizzo dei cookie essenziali per il funzionamento del sito
+            </p>
+        </div>
+    </div>
+
     <!-- Navigation -->
     <nav class="navbar">
         <div class="container">
