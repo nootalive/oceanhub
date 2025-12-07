@@ -940,6 +940,74 @@ const setupScrollAnimations = () => {
     });
 };
 
+// ===== WAVE SWAY ANIMATION =====
+// Usa requestAnimationFrame per muovere elementi .wave-sway con una sinusoide.
+// Rispetta prefers-reduced-motion.
+// Rationale: requestAnimationFrame permette animazione fluida e sincronizzata al frame.
+const setupWaveSway = () => {
+    // esci subito se non ci sono elementi o l'utente chiede riduzione movimento
+    const prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const waveEls = Array.from(document.querySelectorAll('.wave-section .wave-sway'));
+    
+    if (!waveEls.length || prefersReduced) {
+        // fallback: aggiungi classe CSS per movimento lento se JS disabilitato
+        waveEls.forEach(el => el.classList.add('css-fallback'));
+        return;
+    }
+
+    // config: ampiezza e velocità controllabili
+    const baseAmp = 6;     // px - ampiezza
+    const baseSpeed = 1.0; // velocità base (rad/s)
+    const stagger = 0.14;  // offset per elemento (genera effetto onda)
+
+    let start = null;
+    let animationId = null;
+
+    function loop(ts) {
+        if (!start) start = ts;
+        const t = (ts - start) / 1000; // seconds
+        
+        waveEls.forEach((el, i) => {
+            const speed = baseSpeed + i * 0.06;
+            const amp = baseAmp + (i % 3) * 1.5;
+            const x = Math.sin(t * speed + i * stagger) * amp;
+            
+            // applica transform
+            el.style.transform = `translateX(${x.toFixed(2)}px)`;
+            
+            // toggle glow classe quando movimento > soglia per effetto visivo
+            if (Math.abs(x) > 4) {
+                el.classList.add('sway-glow');
+            } else {
+                el.classList.remove('sway-glow');
+            }
+        });
+        
+        animationId = requestAnimationFrame(loop);
+    }
+
+    // start animation quando la sezione entra in viewport (evita lavori inutili)
+    const io = new IntersectionObserver((entries, obs) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                animationId = requestAnimationFrame(loop);
+                obs.disconnect();
+            }
+        });
+    }, { threshold: 0.15 });
+
+    const section = document.querySelector('.wave-section');
+    if (section) io.observe(section);
+
+    // cleanup on unload
+    window.addEventListener('pagehide', () => {
+        if (animationId) cancelAnimationFrame(animationId);
+        waveEls.forEach(el => el.style.transform = '');
+    });
+    
+    logger.info('🌊 Wave sway animation initialized');
+};
+
 // ===== EVENT LISTENERS SETUP =====
 document.addEventListener('DOMContentLoaded', async () => {
     logger.info('🚀 OceanHub loaded');
@@ -996,6 +1064,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     bannerManager.setupBannerUpload();
     audioManager.setupAudioControls();
     setupScrollAnimations();
+    setupWaveSway();
     
     // Check OAuth callback
     discordOAuth.handleOAuthCallback();
