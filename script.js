@@ -1,7 +1,8 @@
 /*========================================
-   OCEANHUB - Script
+   OCEANHUB - Script v2
    Discord Integration + OAuth2 Demo
-   Modal + Shop + Wallet Management
+   MOD Role Purchase + Banner Upload + Audio Effects
+   Modal + Shop + Wallet Management + Neon Glow
    ========================================*/
 
 // ===== LOGGER UTILITY =====
@@ -71,17 +72,41 @@ const debugMode = (() => {
     return { enableDebug, disableDebug };
 })();
 
+// ===== STORAGE UTILITY =====
+// Gestisce localStorage con namespace 'oh_' (OceanHub)
+const storageManager = {
+    set: (key, value) => {
+        try {
+            localStorage.setItem(`oh_${key}`, JSON.stringify(value));
+        } catch (e) {
+            logger.error(`Storage error: ${e.message}`);
+        }
+    },
+    get: (key, defaultValue = null) => {
+        try {
+            const item = localStorage.getItem(`oh_${key}`);
+            return item ? JSON.parse(item) : defaultValue;
+        } catch (e) {
+            logger.error(`Storage read error: ${e.message}`);
+            return defaultValue;
+        }
+    },
+    remove: (key) => {
+        localStorage.removeItem(`oh_${key}`);
+    }
+};
+
 // ===== MOCK API =====
 // Simula endpoint Discord + Bot webhook con latenza realistica
 const mockAPI = {
-    // User wallet state (session-only)
+    // User wallet state (session + localStorage)
     wallet: {
         userId: 'user_' + Math.random().toString(36).substr(2, 9),
-        balance: 1250,
+        balance: storageManager.get('wallet', 1250),
         lastUpdated: new Date().toISOString()
     },
     
-    // Shop items con 6 premi demo
+    // Shop items (MOD role included)
     shopItems: [
         {
             id: 'role_supporter',
@@ -123,10 +148,14 @@ const mockAPI = {
             id: 'role_moderator',
             name: '🛡️ Ruolo Moderator',
             icon: '🔱',
-            description: 'Diventa moderatore del server',
+            description: 'Diventa moderatore del server - Gestisci messaggi e utenti',
             cost: 2000,
             category: 'role',
-            metadata: { roleId: '111222333', permissions: ['manage_messages', 'kick_members'] }
+            metadata: { 
+                roleId: '111222333', 
+                permissions: ['manage_messages', 'kick_members', 'ban_members'],
+                badge: 'MOD'
+            }
         },
         {
             id: 'custom_sound',
@@ -188,7 +217,8 @@ const mockAPI = {
     },
     
     // Fetch Discord roles (mock)
-    // In produzione: usare bot token + endpoint /guilds/{guild_id}/members/@me
+    // PRODUZIONE: Usare bot token + endpoint GET /guilds/{guild_id}/members/@me
+    // Headers: { Authorization: 'Bearer BOT_TOKEN' }
     fetchRoles: async () => {
         try {
             await new Promise(resolve => setTimeout(resolve, 700 + Math.random() * 300));
@@ -205,10 +235,13 @@ const mockAPI = {
         }
     },
     
-    // Submit ticket form
-    // In produzione: inviare a /api/ticket con POST body:
-    // { userId, prizeId, cost, notes, timestamp }
-    // oppure webhook Discord: POST https://discord.com/api/webhooks/{webhook_id}/{token}
+    // Submit ticket form (incluso role assignment)
+    // PRODUZIONE: Inviare a /api/ticket con POST:
+    // Body: { userId, prizeId, cost, notes, roleId?, bannerUrl?, soundUrl? }
+    // Headers: { Authorization: 'Bearer USER_TOKEN' }
+    // Per assign-role: POST /api/assign-role
+    // Body: { userId, guildId, roleId }
+    // Headers: { Authorization: 'Bearer BOT_TOKEN' }
     submitTicket: async (formData) => {
         try {
             await new Promise(resolve => setTimeout(resolve, 800 + Math.random() * 400));
@@ -227,16 +260,21 @@ const mockAPI = {
             mockAPI.wallet.balance -= formData.cost;
             mockAPI.wallet.lastUpdated = new Date().toISOString();
             
-            // Genera ticket ID (in produzione: ricevere da server)
+            // Salva wallet in localStorage
+            storageManager.set('wallet', mockAPI.wallet.balance);
+            
+            // Genera ticket ID
             const ticketId = 'TICKET-' + Date.now().toString(36).toUpperCase();
             
-            logger.info(`🎫 Ticket submitted: ${ticketId}`);
+            // Log acquisto
+            logger.info(`🎫 Ticket submitted: ${ticketId} (${formData.itemName})`);
+            
             return { 
                 success: true, 
                 data: { 
                     ticketId, 
                     newBalance: mockAPI.wallet.balance,
-                    status: 'pending' // In produzione: webhooks notificano staff
+                    status: 'pending'
                 } 
             };
         } catch (error) {
@@ -250,8 +288,19 @@ const mockAPI = {
 // Placeholder per OAuth2 flow
 // Sostituisci YOUR_CLIENT_ID e your-site con valori reali
 const discordOAuth = (() => {
-    const CLIENT_ID = 'YOUR_CLIENT_ID'; // ← Sostituisci con vero client_id
-    const REDIRECT_URI = 'https://your-site/oauth'; // ← Sostituisci con vero callback
+    const CLIENT_ID = 'YOUR_CLIENT_ID'; // ← Sostituisci con vero client_id da Discord Dev Portal
+    const REDIRECT_URI = 'https://your-site/oauth'; // ← Sostituisci con vero callback URL
+    
+    // SETUP REALE OAuth2:
+    // 1. Vai a https://discord.com/developers/applications
+    // 2. Crea New Application
+    // 3. Copia CLIENT_ID
+    // 4. OAuth2 → General → Aggiungi Redirect URL (es: https://tuodominio.com/oauth)
+    // 5. Sostituisci CLIENT_ID e REDIRECT_URI nei valori sotto
+    // 6. Backend riceve ?code= e lo scambia con token via POST a:
+    //    https://discord.com/api/oauth2/token
+    //    Headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+    //    Body: { client_id, client_secret, code, grant_type, redirect_uri }
     
     const generateAuthURL = () => {
         const params = new URLSearchParams({
@@ -276,6 +325,271 @@ const discordOAuth = (() => {
     };
     
     return { generateAuthURL, handleOAuthCallback };
+})();
+
+// ===== RANKS MANAGER =====
+// Gestisce visualizzazione ruoli Discord
+const ranksManager = (() => {
+    let userConnected = false;
+    
+    const updateUserStatus = (status, userData = null) => {
+        userConnected = status === 'connected';
+        const syncBtn = document.getElementById('syncRolesBtn');
+        
+        if (syncBtn) {
+            syncBtn.disabled = !userConnected;
+            if (userConnected) {
+                syncBtn.style.cursor = 'pointer';
+                logger.info(`✅ Discord connected: ${userData?.username}`);
+            }
+        }
+    };
+    
+    const syncRoles = async () => {
+        if (!userConnected) {
+            logger.warn('⚠️ Not connected to Discord');
+            return;
+        }
+        
+        const syncBtn = document.getElementById('syncRolesBtn');
+        if (syncBtn) syncBtn.disabled = true;
+        
+        const result = await mockAPI.fetchRoles();
+        
+        if (result.success) {
+            renderRoles(result.data);
+            logger.info('🎖️ Roles displayed');
+        } else {
+            logger.error(`❌ Role sync failed: ${result.error}`);
+        }
+        
+        if (syncBtn) syncBtn.disabled = !userConnected;
+    };
+    
+    const renderRoles = (roles) => {
+        const container = document.getElementById('discordRanksContainer');
+        if (!container) return;
+        
+        container.innerHTML = '';
+        roles.forEach(role => {
+            const badge = document.createElement('div');
+            badge.className = 'rank-badge';
+            badge.style.borderColor = role.color;
+            badge.innerHTML = `<span style="color: ${role.color}">${role.name}</span>`;
+            container.appendChild(badge);
+        });
+    };
+    
+    return { updateUserStatus, syncRoles };
+})();
+
+// ===== BANNER MANAGER =====
+// Gestisce upload e preview banner personalizzato
+const bannerManager = (() => {
+    let bannerData = storageManager.get('banner', null);
+    
+    const setupBannerUpload = () => {
+        const upload = document.getElementById('bannerUpload');
+        const previewBtn = document.getElementById('bannerPreviewBtn');
+        const applyBtn = document.getElementById('bannerApplyBtn');
+        const preview = document.getElementById('bannerPreview');
+        const img = document.getElementById('bannerImg');
+        
+        if (!upload) return;
+        
+        upload.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            // Controlla tipo
+            if (!file.type.startsWith('image/')) {
+                logger.error('❌ File non è un\'immagine');
+                return;
+            }
+            
+            // Controlla size (max 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                logger.error('❌ Immagine troppo grande (max 5MB)');
+                return;
+            }
+            
+            // Leggi file
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const dataUrl = event.target.result;
+                img.src = dataUrl;
+                preview.style.display = 'block';
+                previewBtn.disabled = false;
+                
+                // Abilita apply
+                applyBtn.onclick = () => {
+                    bannerData = {
+                        url: dataUrl,
+                        name: file.name,
+                        size: file.size,
+                        appliedAt: new Date().toISOString()
+                    };
+                    storageManager.set('banner', bannerData);
+                    logger.info(`✅ Banner applied: ${file.name}`);
+                    
+                    // Feedback
+                    applyBtn.textContent = '✅ Applicato';
+                    setTimeout(() => {
+                        applyBtn.textContent = 'Applica Banner';
+                    }, 2000);
+                };
+            };
+            reader.readAsDataURL(file);
+            logger.info(`📸 Banner preview loaded: ${file.name}`);
+        });
+        
+        // Preview button
+        previewBtn.addEventListener('click', () => {
+            if (preview.style.display === 'block') {
+                preview.style.display = 'none';
+                previewBtn.textContent = '👁️ Anteprima';
+            } else {
+                preview.style.display = 'block';
+                previewBtn.textContent = '👁️ Nascondi';
+            }
+        });
+    };
+    
+    return { setupBannerUpload };
+})();
+
+// ===== AUDIO MANAGER =====
+// Gestisce effetti audio personalizzati + mute toggle
+const audioManager = (() => {
+    let audioData = storageManager.get('audio', null);
+    let isMuted = storageManager.get('audioMuted', false);
+    
+    // Check prefers-reduced-motion
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    
+    const shouldPlayAudio = () => {
+        return !isMuted && !prefersReducedMotion;
+    };
+    
+    const setupAudioControls = () => {
+        const player = document.getElementById('audioPlayer');
+        const presetSelect = document.getElementById('audioPresetSelect');
+        const playBtn = document.getElementById('audioPlayBtn');
+        const uploadInput = document.getElementById('audioUpload');
+        const uploadPlayBtn = document.getElementById('audioUploadPlayBtn');
+        const muteToggle = document.getElementById('muteToggle');
+        
+        if (!player) return;
+        
+        // Preset audio demo (non includere file reali - placeholder)
+        const presets = {
+            chime: { name: 'Chime', duration: 1 },
+            pop: { name: 'Pop', duration: 0.5 },
+            ding: { name: 'Ding', duration: 0.8 }
+        };
+        
+        // Preset select
+        presetSelect.addEventListener('change', (e) => {
+            const preset = e.target.value;
+            playBtn.disabled = !preset;
+            if (preset) {
+                logger.info(`🔊 Preset selected: ${presets[preset].name}`);
+            }
+        });
+        
+        // Play preset
+        playBtn.addEventListener('click', () => {
+            const preset = presetSelect.value;
+            if (!preset) return;
+            
+            if (shouldPlayAudio()) {
+                playAudioFeedback();
+                logger.info(`▶️ Playing preset: ${presets[preset].name}`);
+            } else {
+                logger.info(`🔇 Audio muted or reduced motion enabled`);
+            }
+        });
+        
+        // File upload
+        uploadInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            // Controlla tipo
+            if (!['audio/mpeg', 'audio/ogg', 'audio/wav'].includes(file.type)) {
+                logger.error('❌ Tipo audio non supportato (mp3, ogg, wav)');
+                return;
+            }
+            
+            // Controlla size (max 10MB)
+            if (file.size > 10 * 1024 * 1024) {
+                logger.error('❌ Audio troppo grande (max 10MB)');
+                return;
+            }
+            
+            // Leggi file
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const dataUrl = event.target.result;
+                player.src = dataUrl;
+                uploadPlayBtn.disabled = false;
+                
+                audioData = {
+                    url: dataUrl,
+                    name: file.name,
+                    type: file.type,
+                    size: file.size,
+                    uploadedAt: new Date().toISOString()
+                };
+                storageManager.set('audio', audioData);
+                logger.info(`🎵 Audio uploaded: ${file.name}`);
+            };
+            reader.readAsDataURL(file);
+        });
+        
+        // Play uploaded audio
+        uploadPlayBtn.addEventListener('click', () => {
+            if (shouldPlayAudio()) {
+                player.play().catch(e => logger.error(`❌ Play error: ${e.message}`));
+                logger.info('▶️ Playing custom audio');
+            } else {
+                logger.info(`🔇 Audio muted or reduced motion enabled`);
+            }
+        });
+        
+        // Mute toggle
+        muteToggle.addEventListener('change', (e) => {
+            isMuted = e.target.checked;
+            storageManager.set('audioMuted', isMuted);
+            logger.info(`🔇 Audio ${isMuted ? 'muted' : 'unmuted'}`);
+        });
+        
+        // Load mute state
+        muteToggle.checked = isMuted;
+    };
+    
+    const playAudioFeedback = () => {
+        // Crea oscillatore per tone (demo senza file audio)
+        if (!window.AudioContext && !window.webkitAudioContext) return;
+        
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        
+        oscillator.connect(gain);
+        gain.connect(audioContext.destination);
+        
+        oscillator.frequency.value = 800; // Hz
+        oscillator.type = 'sine';
+        
+        gain.gain.setValueAtTime(0.3, audioContext.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+        
+        oscillator.start(audioContext.currentTime);
+        oscillator.stop(audioContext.currentTime + 0.2);
+    };
+    
+    return { setupAudioControls, shouldPlayAudio, playAudioFeedback };
 })();
 
 // ===== SHOP MANAGER =====
@@ -316,8 +630,8 @@ const shopManager = (() => {
             <div class="shop-item-icon">${item.icon}</div>
             <h3 class="shop-item-name">${item.name}</h3>
             <p class="shop-item-desc">${item.description}</p>
-            <div class="shop-item-price">💰 ${item.cost} coins</div>
-            <button class="shop-item-btn" data-item-id="${item.id}">
+            <div class="shop-item-price neon-price-tag">💰 ${item.cost} coins</div>
+            <button class="shop-item-btn" data-item-id="${item.id}" aria-label="Riscatta ${item.name}">
                 🎁 Riscatta
             </button>
         `;
@@ -325,6 +639,7 @@ const shopManager = (() => {
         // Listener per apertura modal
         card.querySelector('button').addEventListener('click', () => {
             ticketManager.openModal(item);
+            logger.info(`🛒 Purchase attempt: ${item.name}`);
         });
         
         shopGrid.appendChild(card);
@@ -353,272 +668,211 @@ const ticketManager = (() => {
     const openModal = (item) => {
         selectedItem = item;
         const modal = document.getElementById('ticketModal');
+        const prizeInput = document.getElementById('ticketPrize');
+        const costInput = document.getElementById('ticketCost');
+        const form = document.getElementById('ticketForm');
         const result = document.getElementById('ticketResult');
         
-        // Riempi form con dati item
-        document.getElementById('ticketPrize').value = item.name;
-        document.getElementById('ticketCost').value = item.cost;
-        document.getElementById('ticketNotes').value = '';
-        document.getElementById('ticketTerms').checked = false;
+        if (!modal) return;
         
-        // Nascondi result
+        prizeInput.value = item.name;
+        costInput.value = item.cost;
+        form.style.display = 'block';
         result.style.display = 'none';
-        result.innerHTML = '';
         
         modal.classList.add('active');
         
-        // Focus trap: focus sul primo input
+        // Focus management: auto-focus prima input
         setTimeout(() => {
-            document.getElementById('ticketNotes').focus();
+            const firstInput = form.querySelector('input, textarea, select');
+            if (firstInput) firstInput.focus();
+            logger.info(`📋 Modal opened: ${item.name}`);
         }, 100);
-        
-        logger.info(`🎫 Modal aperto per: ${item.name}`);
     };
     
     const closeModal = () => {
         const modal = document.getElementById('ticketModal');
-        modal.classList.remove('active');
+        if (modal) {
+            modal.classList.remove('active');
+            logger.info('📋 Modal closed');
+        }
         selectedItem = null;
-        logger.info('🎫 Modal chiuso');
     };
     
     const validateForm = () => {
-        const notes = document.getElementById('ticketNotes').value;
-        const terms = document.getElementById('ticketTerms').checked;
-        
-        if (!terms) {
-            alert('⚠️ Accetta i termini per continuare');
-            return false;
-        }
-        
-        if (!selectedItem) {
-            alert('⚠️ Nessun premio selezionato');
-            return false;
-        }
-        
-        return true;
+        const termsCheckbox = document.getElementById('ticketTerms');
+        return termsCheckbox.checked;
     };
     
     const submitForm = async (e) => {
         e.preventDefault();
         
-        if (!validateForm()) return;
+        if (!validateForm()) {
+            logger.error('❌ Accetta i termini prima di procedere');
+            return;
+        }
+        
+        if (!selectedItem) {
+            logger.error('❌ Nessun premio selezionato');
+            return;
+        }
         
         const form = document.getElementById('ticketForm');
+        const result = document.getElementById('ticketResult');
+        const notes = document.getElementById('ticketNotes').value;
         const submitBtn = form.querySelector('button[type="submit"]');
         
-        // Disabilita bottone durante submit
+        // Disable submit
         submitBtn.disabled = true;
-        submitBtn.textContent = '⏳ Invio...';
+        submitBtn.textContent = '⏳ Elaborazione...';
         
+        // Chiama API
         const formData = {
             itemId: selectedItem.id,
             itemName: selectedItem.name,
             cost: selectedItem.cost,
-            notes: document.getElementById('ticketNotes').value,
-            timestamp: new Date().toISOString()
+            notes: notes,
+            type: selectedItem.category,
+            roleId: selectedItem.metadata?.roleId
         };
         
-        try {
-            const result = await mockAPI.submitTicket(formData);
-            
-            if (result.success) {
-                // Mostra success message
-                const resultDiv = document.getElementById('ticketResult');
-                resultDiv.className = 'ticket-result success';
-                resultDiv.innerHTML = `
-                    <h3>✅ Richiesta Inviata!</h3>
-                    <p><strong>Ticket ID:</strong> ${result.data.ticketId}</p>
-                    <p><strong>Status:</strong> In sospeso - Lo staff prenderà in carico</p>
-                    <p><strong>Nuovo saldo:</strong> ${result.data.newBalance} coins</p>
-                `;
-                resultDiv.style.display = 'block';
-                
-                // Reset form
-                form.style.display = 'none';
-                
-                // Aggiorna wallet display
-                walletManager.loadWallet();
-                
-                // Auto-chiudi dopo 5 secondi
-                setTimeout(() => {
-                    closeModal();
-                    form.style.display = 'flex'; // Ripristina per prossima volta
-                }, 5000);
-                
-                logger.info(`🎫 Ticket success: ${result.data.ticketId}`);
-            } else {
-                throw new Error(result.error);
-            }
-        } catch (error) {
-            const resultDiv = document.getElementById('ticketResult');
-            resultDiv.className = 'ticket-result error';
-            resultDiv.innerHTML = `
-                <h3>❌ Errore Invio</h3>
-                <p>${error.message}</p>
+        const apiResult = await mockAPI.submitTicket(formData);
+        
+        form.style.display = 'none';
+        
+        if (apiResult.success) {
+            const data = apiResult.data;
+            result.innerHTML = `
+                <div class="ticket-success">
+                    <h3>✅ Ticket Inviato!</h3>
+                    <p>ID Ticket: <strong>${data.ticketId}</strong></p>
+                    <p>Nuovo Saldo: <span class="balance-update" id="balanceUpdate">${data.newBalance}</span> coins</p>
+                    <p style="font-size: 0.9em; color: var(--text-secondary);">Lo staff ti contatterà a breve</p>
+                </div>
             `;
-            resultDiv.style.display = 'block';
-            logger.error(`Ticket error: ${error.message}`);
-        } finally {
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Invia Richiesta';
+            
+            // Play audio feedback se abilitato
+            if (audioManager.shouldPlayAudio()) {
+                audioManager.playAudioFeedback();
+            }
+            
+            // Anima balance update
+            updateWalletDisplay(data.newBalance);
+            
+            // Auto-close dopo 5 sec
+            setTimeout(() => {
+                closeModal();
+                form.style.display = 'block';
+                form.reset();
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Invia Richiesta';
+            }, 5000);
+        } else {
+            result.innerHTML = `
+                <div class="ticket-error">
+                    <h3>❌ Errore</h3>
+                    <p>${apiResult.error}</p>
+                </div>
+            `;
+            
+            // Restore button
+            setTimeout(() => {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Invia Richiesta';
+            }, 2000);
         }
+        
+        result.style.display = 'block';
     };
     
-    // Setup listeners
-    const init = () => {
-        document.getElementById('closeModal')?.addEventListener('click', closeModal);
-        document.getElementById('cancelTicket')?.addEventListener('click', closeModal);
-        document.getElementById('ticketForm')?.addEventListener('submit', submitForm);
+    const setupListeners = () => {
+        const modal = document.getElementById('ticketModal');
+        const closeBtn = document.getElementById('closeModal');
+        const cancelBtn = document.getElementById('cancelTicket');
+        const form = document.getElementById('ticketForm');
         
-        // Chiudi con Escape key
+        if (!modal) return;
+        
+        // Close button
+        if (closeBtn) {
+            closeBtn.addEventListener('click', closeModal);
+        }
+        
+        // Cancel button
+        if (cancelBtn) {
+            cancelBtn.addEventListener('click', closeModal);
+        }
+        
+        // Escape key
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
+            if (e.key === 'Escape' && modal.classList.contains('active')) {
                 closeModal();
             }
         });
+        
+        // Form submit
+        if (form) {
+            form.addEventListener('submit', submitForm);
+        }
     };
     
-    return { openModal, closeModal, validateForm, submitForm, init };
+    return { openModal, closeModal, setupListeners };
 })();
 
-// ===== WALLET MANAGER =====
-const walletManager = (() => {
-    const loadWallet = async () => {
+// ===== WALLET & BALANCE =====
+const walletManager = {
+    updateBalance: async () => {
         const result = await mockAPI.fetchWallet();
-        
         if (result.success) {
-            const balanceEl = document.getElementById('walletBalance');
-            if (balanceEl) {
-                balanceEl.textContent = result.data.balance;
-            }
-        } else {
-            logger.warn(`Wallet load failed: ${result.error}`);
+            updateWalletDisplay(result.data.balance);
         }
-    };
-    
-    const setupWalletButton = () => {
-        document.getElementById('btnCheckWallet')?.addEventListener('click', loadWallet);
-    };
-    
-    return { loadWallet, setupWalletButton };
-})();
-
-// ===== RANKS MANAGER =====
-// Mostra ruoli Discord sincronizzati dal server
-const ranksManager = (() => {
-    let isConnected = false;
-    
-    const updateUserStatus = (status, userData = null) => {
-        isConnected = status === 'connected';
-        const btn = document.getElementById('syncRolesBtn');
-        
-        if (isConnected) {
-            btn.disabled = false;
-            logger.info(`✅ Discord connected: ${userData.username}`);
-        } else {
-            btn.disabled = true;
-            document.getElementById('discordRanksContainer').innerHTML = 
-                '<div class="rank-placeholder">Connetti Discord per vedere i tuoi ruoli</div>';
-        }
-    };
-    
-    const syncRoles = async () => {
-        const container = document.getElementById('discordRanksContainer');
-        container.innerHTML = '<div class="rank-placeholder">Sincronizzazione...</div>';
-        
-        const result = await mockAPI.fetchRoles();
-        
-        if (result.success) {
-            container.innerHTML = '';
-            result.data.forEach(role => {
-                const badge = document.createElement('div');
-                badge.className = 'rank-badge';
-                badge.style.borderColor = role.color;
-                badge.style.color = role.color;
-                badge.textContent = role.name;
-                container.appendChild(badge);
-            });
-            logger.info(`✅ ${result.data.length} ruoli sincronizzati`);
-        } else {
-            container.innerHTML = `<div class="rank-placeholder">❌ Errore: ${result.error}</div>`;
-        }
-    };
-    
-    const setupSyncButton = () => {
-        document.getElementById('syncRolesBtn')?.addEventListener('click', syncRoles);
-    };
-    
-    return { updateUserStatus, syncRoles, setupSyncButton };
-})();
-
-// Make updateUserStatus global for OAuth callback
-window.updateUserStatus = ranksManager.updateUserStatus;
-
-// ===== DISCORD CONNECT BUTTON =====
-const setupDiscordConnect = () => {
-    const btn = document.getElementById('discordConnectBtn');
-    if (!btn) return;
-    
-    btn.addEventListener('click', () => {
-        // Genera OAuth URL con placeholder
-        const authUrl = discordOAuth.generateAuthURL();
-        
-        // In produzione: window.location.href = authUrl
-        // Per demo: mostra placeholder con istruzioni
-        logger.warn('🔐 OAuth2 Placeholder. In produzione:');
-        logger.info(`URL: ${authUrl}`);
-        logger.info('Sostituisci YOUR_CLIENT_ID con vero Discord Application ID');
-        
-        // Per test demo: simula success con parametro
-        if (confirm('👉 Per demo: vuoi simulare il login con ?oauth=success?')) {
-            window.location.href = window.location.pathname + '?oauth=success';
-        }
-    });
+    }
 };
 
-// ===== NAVIGATION =====
-const navigation = (() => {
-    const setupSmoothScroll = () => {
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', (e) => {
-                const href = anchor.getAttribute('href');
-                if (href === '#') return;
-                
-                e.preventDefault();
-                const target = document.querySelector(href);
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth' });
-                }
-            });
-        });
-    };
+function updateWalletDisplay(balance) {
+    const balanceEl = document.getElementById('walletBalance');
+    if (!balanceEl) return;
     
-    const updateActiveLinks = () => {
-        // Aggiorna nav links based on scroll position
-        const sections = document.querySelectorAll('section[id]');
+    const oldBalance = parseInt(balanceEl.textContent);
+    const newBalance = balance;
+    
+    if (oldBalance !== newBalance) {
+        // Anima cambio
+        balanceEl.classList.add('balance-changing');
         
-        window.addEventListener('scroll', () => {
-            sections.forEach(section => {
-                const rect = section.getBoundingClientRect();
-                const navLink = document.querySelector(`a[href="#${section.id}"]`);
-                
-                if (navLink && rect.top <= 100 && rect.bottom >= 100) {
-                    document.querySelectorAll('.nav-menu a').forEach(a => a.classList.remove('active'));
-                    navLink.classList.add('active');
-                }
-            });
-        });
-    };
-    
-    return { setupSmoothScroll, updateActiveLinks };
-})();
+        // Numero che cambia
+        let current = oldBalance;
+        const step = (newBalance - oldBalance) / 10;
+        const interval = setInterval(() => {
+            current += step;
+            if ((step > 0 && current >= newBalance) || (step < 0 && current <= newBalance)) {
+                balanceEl.textContent = newBalance;
+                clearInterval(interval);
+                balanceEl.classList.remove('balance-changing');
+                logger.info(`💰 Balance updated: ${newBalance} coins`);
+            } else {
+                balanceEl.textContent = Math.round(current);
+            }
+        }, 30);
+        
+        // Update localStorage
+        storageManager.set('wallet', newBalance);
+        mockAPI.wallet.balance = newBalance;
+    }
+}
 
-// ===== INTERSECTION OBSERVER =====
-// Anima card quando scrollano in view
-const setupIntersectionObserver = () => {
+// ===== USER STATUS UPDATE =====
+function updateUserStatus(status, userData = null) {
+    ranksManager.updateUserStatus(status, userData);
+}
+
+// ===== SCROLL ANIMATIONS =====
+// Fade-in + slide-up su sezioni con IntersectionObserver
+const setupScrollAnimations = () => {
+    const sections = document.querySelectorAll('section');
+    
     const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
+        entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('fade-in');
                 observer.unobserve(entry.target);
@@ -626,93 +880,70 @@ const setupIntersectionObserver = () => {
         });
     }, { threshold: 0.1 });
     
-    document.querySelectorAll('section').forEach(section => {
+    sections.forEach(section => {
         observer.observe(section);
     });
 };
 
-// ===== SCROLL TO TOP BUTTON =====
-const setupScrollTopButton = () => {
-    const button = document.createElement('button');
-    button.id = 'scrollTopBtn';
-    button.innerHTML = '⬆️';
-    button.style.cssText = `
-        position: fixed;
-        bottom: 2rem;
-        right: 2rem;
-        width: 50px;
-        height: 50px;
-        background: linear-gradient(135deg, var(--neon-blue), var(--ocean-blue));
-        border: 1px solid rgba(0, 212, 255, 0.5);
-        border-radius: var(--radius-xl);
-        color: white;
-        font-size: 1.5rem;
-        cursor: pointer;
-        opacity: 0;
-        transition: all var(--transition-normal);
-        pointer-events: none;
-        z-index: 999;
-        box-shadow: var(--glow-md);
-    `;
+// ===== EVENT LISTENERS SETUP =====
+document.addEventListener('DOMContentLoaded', async () => {
+    logger.info('🚀 OceanHub loaded');
     
-    document.body.appendChild(button);
-    
-    window.addEventListener('scroll', () => {
-        if (window.scrollY > 300) {
-            button.style.opacity = '1';
-            button.style.pointerEvents = 'auto';
-        } else {
-            button.style.opacity = '0';
-            button.style.pointerEvents = 'none';
-        }
-    });
-    
-    button.addEventListener('click', () => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
-};
-
-// ===== DEV PANEL CONTROLS =====
-const setupDevPanel = () => {
+    // Dev panel buttons
     document.getElementById('closeDevPanel')?.addEventListener('click', () => {
         document.getElementById('devPanel')?.classList.remove('active');
     });
     
     document.getElementById('clearDevLog')?.addEventListener('click', () => {
-        const logPanel = document.getElementById('devLog');
-        if (logPanel) {
-            logPanel.innerHTML = '';
-            logger.info('Log cleared');
-        }
+        const panel = document.getElementById('devLog');
+        if (panel) panel.innerHTML = '';
+        logger.info('🗑️ Dev log cleared');
     });
-};
-
-// ===== INITIALIZATION =====
-document.addEventListener('DOMContentLoaded', async () => {
-    logger.info('🌊 OceanHub Site - Initialization started');
     
-    // Setup all managers
+    // Discord Connect buttons
+    const discordConnectBtn = document.getElementById('discordConnectBtn');
+    const oauthDiscordBtn = document.getElementById('oauthDiscordBtn');
+    
+    if (discordConnectBtn) {
+        discordConnectBtn.addEventListener('click', () => {
+            const url = discordOAuth.generateAuthURL();
+            logger.info(`🔐 OAuth URL: ${url}`);
+            // In produzione: window.location.href = url;
+            // Per demo: aggiungere ?oauth=success al parametro
+            logger.warn('💡 Demo mode: Use ?oauth=success to simulate OAuth');
+        });
+    }
+    
+    if (oauthDiscordBtn) {
+        oauthDiscordBtn.addEventListener('click', () => {
+            const url = discordOAuth.generateAuthURL();
+            logger.info(`🔐 Starting OAuth flow`);
+            // window.location.href = url;
+            logger.warn('💡 Demo mode: Use ?oauth=success');
+        });
+    }
+    
+    // Wallet check button
+    document.getElementById('btnCheckWallet')?.addEventListener('click', () => {
+        walletManager.updateBalance();
+    });
+    
+    // Sync roles button
+    document.getElementById('syncRolesBtn')?.addEventListener('click', () => {
+        ranksManager.syncRoles();
+    });
+    
+    // Setup managers
     shopManager.setupFilters();
-    await shopManager.loadShop();
+    shopManager.loadShop('all');
+    walletManager.updateBalance();
+    ticketManager.setupListeners();
+    bannerManager.setupBannerUpload();
+    audioManager.setupAudioControls();
+    setupScrollAnimations();
     
-    walletManager.setupWalletButton();
-    await walletManager.loadWallet();
-    
-    ranksManager.setupSyncButton();
-    
-    ticketManager.init();
-    
-    setupDiscordConnect();
-    setupScrollTopButton();
-    setupDevPanel();
-    
-    navigation.setupSmoothScroll();
-    navigation.updateActiveLinks();
-    
-    setupIntersectionObserver();
-    
-    // Handle OAuth callback
+    // Check OAuth callback
     discordOAuth.handleOAuthCallback();
     
-    logger.info('✅ OceanHub Site - Ready!');
+    logger.info('✅ All systems ready');
 });

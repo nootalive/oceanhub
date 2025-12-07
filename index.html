@@ -135,7 +135,7 @@
                 </button>
             </div>
 
-            <!-- Wallet Info -->
+            <!-- Wallet Info with Profile section -->
             <div class="wallet-info">
                 <div class="wallet-card neon-card">
                     <div class="wallet-header">
@@ -149,6 +149,63 @@
                     <button class="btn btn-secondary" id="btnCheckWallet">
                         <i class="fas fa-sync"></i> Aggiorna
                     </button>
+                </div>
+
+                <!-- Profile Settings (Banner + Audio) - Sezione personalizzazione -->
+                <div class="profile-settings neon-card">
+                    <div class="profile-header">
+                        <i class="fas fa-user"></i>
+                        <h3>Personalizza il Profilo</h3>
+                    </div>
+
+                    <!-- Banner Upload & Preview -->
+                    <div class="profile-section">
+                        <h4>📸 Banner Personalizzato</h4>
+                        <div class="banner-upload-group">
+                            <input type="file" id="bannerUpload" accept="image/*" aria-label="Carica banner personalizzato">
+                            <button type="button" id="bannerPreviewBtn" class="btn btn-secondary" disabled>
+                                <i class="fas fa-eye"></i> Anteprima
+                            </button>
+                        </div>
+                        <div id="bannerPreview" class="banner-preview" style="display:none;">
+                            <img id="bannerImg" alt="Banner preview">
+                            <button type="button" id="bannerApplyBtn" class="btn btn-neon">Applica Banner</button>
+                        </div>
+                    </div>
+
+                    <!-- Audio Sound Effect Upload & Preview -->
+                    <div class="profile-section">
+                        <h4>🔊 Effetto Audio Personalizzato</h4>
+                        <div class="audio-upload-group">
+                            <select id="audioPresetSelect" aria-label="Scegli effetto audio preset">
+                                <option value="">-- Seleziona preset (demo) --</option>
+                                <option value="chime">Chime (campana)</option>
+                                <option value="pop">Pop (scoppio)</option>
+                                <option value="ding">Ding (campanello)</option>
+                            </select>
+                            <button type="button" id="audioPlayBtn" class="btn btn-secondary" disabled>
+                                <i class="fas fa-play"></i> Preview
+                            </button>
+                        </div>
+                        <div class="audio-divider">— o carica il tuo file —</div>
+                        <div class="audio-file-group">
+                            <input type="file" id="audioUpload" accept="audio/*" aria-label="Carica file audio personalizzato">
+                            <button type="button" id="audioUploadPlayBtn" class="btn btn-secondary" disabled>
+                                <i class="fas fa-play"></i> Ascolta
+                            </button>
+                        </div>
+                        <!-- Audio player nascosto -->
+                        <audio id="audioPlayer" style="display:none;"></audio>
+                    </div>
+
+                    <!-- Mute toggle -->
+                    <div class="profile-section">
+                        <label class="mute-toggle">
+                            <input type="checkbox" id="muteToggle" aria-label="Disabilita effetti sonori">
+                            <span>Silenzia effetti sonori</span>
+                        </label>
+                        <small>I suoni non si riprodurranno se disabilitati o se "Riduci moti" è attivo</small>
+                    </div>
                 </div>
             </div>
 
