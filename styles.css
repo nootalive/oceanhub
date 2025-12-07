@@ -33,8 +33,9 @@
     --spacing-sm: 0.5rem;            /* 8px */
     --spacing-md: 1rem;              /* 16px */
     --spacing-lg: 1.5rem;            /* 24px */
-    --spacing-xl: 2rem;              /* 32px */
-    --spacing-2xl: 3rem;             /* 48px */
+    --spacing-xl: 2.5rem;            /* 40px */
+    --spacing-2xl: 4rem;             /* 64px */
+    --spacing-section: 6rem;         /* 96px - section padding */
     
     /* ===== SHADOWS & GLOWS ===== */
     /* Shadow 1: Subtle elevation */
@@ -542,34 +543,62 @@ section.fade-in {
 
 .feature-card {
     background: linear-gradient(135deg, rgba(88, 101, 242, 0.1), rgba(0, 212, 255, 0.05));
-    border: 1px solid rgba(0, 212, 255, 0.2);
-    border-radius: var(--radius-lg);
-    padding: var(--spacing-lg);
+    border: 2px solid rgba(0, 212, 255, 0.3);
+    border-radius: var(--radius-xl);
+    padding: var(--spacing-2xl);
     transition: all var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+}
+
+.feature-card::before {
+    content: '';
+    position: absolute;
+    top: -100%;
+    left: -100%;
+    width: 300%;
+    height: 300%;
+    background: radial-gradient(circle, rgba(0, 212, 255, 0.1) 0%, transparent 70%);
+    transition: all var(--transition-slow);
+    opacity: 0;
+}
+
+.feature-card:hover::before {
+    opacity: 1;
+    transform: translate(30%, 30%);
 }
 
 .feature-card i {
-    font-size: 2.5rem;
+    font-size: 3.5rem;
     color: var(--neon-cyan);
-    margin-bottom: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+    filter: drop-shadow(var(--glow-md));
+    transition: all var(--transition-normal);
+}
+
+.feature-card:hover i {
+    transform: scale(1.1) rotate(5deg);
+    filter: drop-shadow(var(--glow-lg));
 }
 
 .feature-card h3 {
-    margin-bottom: var(--spacing-sm);
+    margin-bottom: var(--spacing-md);
     color: var(--text-primary);
+    font-size: 1.5rem;
 }
 
 .feature-card p {
     margin: 0;
-    font-size: 0.95rem;
+    font-size: 1rem;
+    color: var(--text-secondary);
+    line-height: var(--line-height-relaxed);
 }
 
 /* Micro-glow on hover */
 .feature-card:hover {
-    background: linear-gradient(135deg, rgba(88, 101, 242, 0.2), rgba(0, 212, 255, 0.1));
     border-color: var(--neon-cyan);
-    box-shadow: var(--glow-md), var(--shadow-md);
-    transform: translateY(-4px);
+    box-shadow: var(--glow-lg);
+    transform: translateY(-8px);
 }
 
 /* ===== WALLET & SHOP ===== */
