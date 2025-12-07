@@ -165,8 +165,8 @@ const mockAPI = {
     shopItems: [
         {
             id: 'role_supporter',
-            name: '⭐ Ruolo Supporter',
-            icon: '👑',
+            name: 'Ruolo Supporter',
+            icon: '<i class="fas fa-crown"></i>',
             description: 'Badge esclusivo + colore custom nel server',
             cost: 500,
             category: 'role',
@@ -174,8 +174,8 @@ const mockAPI = {
         },
         {
             id: 'custom_nickname',
-            name: '✨ Nickname Personalizzato',
-            icon: '📝',
+            name: 'Nickname Personalizzato',
+            icon: '<i class="fas fa-pen"></i>',
             description: 'Cambia il tuo nickname con colore neon',
             cost: 250,
             category: 'custom',
@@ -183,8 +183,8 @@ const mockAPI = {
         },
         {
             id: 'role_vip',
-            name: '💎 Ruolo VIP',
-            icon: '💎',
+            name: 'Ruolo VIP',
+            icon: '<i class="fas fa-gem"></i>',
             description: 'Accesso a canali privati VIP',
             cost: 1000,
             category: 'role',
@@ -192,8 +192,8 @@ const mockAPI = {
         },
         {
             id: 'private_voice',
-            name: '🔊 Privè (Vocale Privata)',
-            icon: '🎙️',
+            name: 'Privè (Vocale Privata)',
+            icon: '<i class="fas fa-microphone"></i>',
             description: 'Vocale privata personale. Richiede ruolo custom. Regole: 5h/settimana, no NSFW/gore',
             cost: 1500,
             category: 'custom',
@@ -209,8 +209,8 @@ const mockAPI = {
         },
         {
             id: 'custom_role',
-            name: '🎨 Ruolo Custom',
-            icon: '⭐',
+            name: 'Ruolo Custom',
+            icon: '<i class="fas fa-star"></i>',
             description: 'Ruolo personalizzato con nome e colore custom. Regole: 150 msg/settimana',
             cost: 800,
             category: 'role',
@@ -687,9 +687,9 @@ const shopManager = (() => {
             <div class="shop-item-icon">${item.icon}</div>
             <h3 class="shop-item-name">${item.name}</h3>
             <p class="shop-item-desc">${item.description}</p>
-            <div class="shop-item-price neon-price-tag">💰 ${item.cost} coins</div>
+            <div class="shop-item-price neon-price-tag"><i class="fas fa-coins"></i> ${item.cost} coins</div>
             <button class="shop-item-btn" data-item-id="${item.id}" aria-label="Riscatta ${item.name}">
-                🎁 Riscatta
+                <i class="fas fa-gift"></i> Riscatta
             </button>
         `;
         
