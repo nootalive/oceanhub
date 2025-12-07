@@ -1449,9 +1449,9 @@ section.fade-in {
 .rewards-steps {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: var(--spacing-lg);
+    gap: var(--spacing-xl);
     align-items: center;
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
 }
 
