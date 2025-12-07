@@ -1,6 +1,15 @@
 /*========================================
-   OCEANHUB NEON THEME - Styles
+   OCEANHUB NEON THEME - Styles v2
    Design System with Neon Glow + Fluido
+   MOD Role + Banner + Audio + Scroll Animations
+   
+   NEON PHILOSOPHY:
+   - Primary: Cyan (#00d4ff) for glow, borders, accents
+   - Secondary: Purple (#b300ff) for secondary glow, debug
+   - Text: Cyan when important (titles, highlights)
+   - Shadows: Always use rgba opacity for subtle layering
+   - Animations: Cubic-bezier easing for fluidity
+   - Accessibility: prefers-reduced-motion support everywhere
    ========================================*/
 
 :root {
