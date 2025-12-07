@@ -1447,11 +1447,10 @@ section.fade-in {
 }
 
 .rewards-steps {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
+    display: flex;
+    flex-direction: column;
     gap: var(--spacing-xl);
-    align-items: center;
-    max-width: 1400px;
+    max-width: 1100px;
     margin: 0 auto;
 }
 
@@ -1459,16 +1458,15 @@ section.fade-in {
     background: linear-gradient(135deg, rgba(88, 101, 242, 0.12), rgba(0, 212, 255, 0.08));
     border: 2px solid rgba(0, 212, 255, 0.3);
     border-radius: var(--radius-xl);
-    padding: var(--spacing-2xl);
-    text-align: center;
+    padding: var(--spacing-xl) var(--spacing-2xl);
     transition: all var(--transition-normal);
     position: relative;
     overflow: hidden;
-    min-height: 260px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: var(--spacing-xl);
     align-items: center;
+    min-height: 140px;
 }
 
 .step::before {
@@ -1503,25 +1501,27 @@ section.fade-in {
     justify-content: center;
     font-size: 2.5rem;
     font-weight: 900;
-    margin: 0 auto var(--spacing-lg);
     box-shadow: 0 0 40px rgba(0, 212, 255, 0.7);
     flex-shrink: 0;
 }
 
+.step-content {
+    text-align: left;
+}
+
 .step h3 {
-    font-size: 1.4rem;
+    font-size: 1.5rem;
     font-weight: 700;
     color: var(--neon-cyan);
-    margin-bottom: var(--spacing-md);
+    margin-bottom: var(--spacing-sm);
     line-height: 1.3;
 }
 
 .step p {
     color: var(--text-secondary);
-    font-size: 1rem;
+    font-size: 1.05rem;
     line-height: var(--line-height-relaxed);
-    max-width: 90%;
-    margin: 0 auto;
+    margin: 0;
 }
 
 .step code {
@@ -1530,14 +1530,7 @@ section.fade-in {
     border-radius: 4px;
     color: var(--neon-cyan);
     font-family: 'Courier New', monospace;
-    font-size: 0.85rem;
-}
-
-.step-arrow {
-    text-align: center;
-    color: var(--neon-cyan);
-    font-size: 2.5rem;
-    animation: pulse 2s ease-in-out infinite;
+    font-size: 0.9rem;
 }
 
 /* ===== STAFF SECTION ===== */
@@ -1903,13 +1896,10 @@ section.fade-in {
         align-items: flex-start;
     }
     
-    .rewards-steps {
-        grid-template-columns: 1fr;
-    }
-    
-    .step-arrow {
-        transform: rotate(90deg);
-        font-size: 1.5rem;
+    .step {
+        grid-template-columns: 90px 1fr;
+        gap: var(--spacing-lg);
+        padding: var(--spacing-lg);
     }
     
     .timeline {
