@@ -191,35 +191,37 @@ const mockAPI = {
             metadata: { roleId: '987654321', perks: ['private-channels', 'voice-priority'] }
         },
         {
-            id: 'profile_banner',
-            name: '🎨 Banner Profilo Personalizzato',
-            icon: '🖼️',
-            description: 'Upload immagine custom per il tuo profilo',
-            cost: 400,
+            id: 'private_voice',
+            name: '🔊 Privè (Vocale Privata)',
+            icon: '🎙️',
+            description: 'Vocale privata personale. Richiede ruolo custom. Regole: 5h/settimana, no NSFW/gore',
+            cost: 1500,
             category: 'custom',
-            metadata: { maxFileSize: 5242880 }
-        },
-        {
-            id: 'role_moderator',
-            name: '🛡️ Ruolo Moderator',
-            icon: '🔱',
-            description: 'Diventa moderatore del server - Gestisci messaggi e utenti',
-            cost: 2000,
-            category: 'role',
             metadata: { 
-                roleId: '111222333', 
-                permissions: ['manage_messages', 'kick_members', 'ban_members'],
-                badge: 'MOD'
+                requiresCustomRole: true,
+                rules: [
+                    '5 ore di vocale a settimana obbligatorie',
+                    'Se eliminata, richiedibile dopo 2 settimane via ticket HIGH STAFF',
+                    'Dopo 2 cancellazioni in 3 mesi non più ricreabile',
+                    'Vietati contenuti NSFW e gore'
+                ]
             }
         },
         {
-            id: 'custom_sound',
-            name: '🎵 Effetto Audio Custom',
-            icon: '🔊',
-            description: 'Personalizza il tuo suono di entrata VC',
-            cost: 350,
-            category: 'custom',
-            metadata: { maxDuration: 10 }
+            id: 'custom_role',
+            name: '🎨 Ruolo Custom',
+            icon: '⭐',
+            description: 'Ruolo personalizzato con nome e colore custom. Regole: 150 msg/settimana',
+            cost: 800,
+            category: 'role',
+            metadata: { 
+                customizable: true,
+                rules: [
+                    'Il proprietario deve fare 150 messaggi a settimana',
+                    'Se eliminato, richiedibile dopo 2 settimane via ticket HIGH STAFF',
+                    'Dopo 2 cancellazioni in 3 mesi non più ricreabile'
+                ]
+            }
         }
     ],
     
@@ -1016,12 +1018,24 @@ const cookieManager = {
         const detailsContent = document.getElementById('detailsContent');
         const acceptBtn = document.getElementById('acceptCookies');
         const closeBtn = document.getElementById('closeCookieModal');
+        const body = document.body;
+
+        if (!modal || !body) return;
+
+        const blockSite = () => body.classList.add('cookie-blocked');
+        const unblockSite = () => body.classList.remove('cookie-blocked');
+
+        const showModal = () => {
+            blockSite();
+            modal.style.display = 'flex';
+        };
         
         // Check if user already accepted
         if (!localStorage.getItem('oh_cookies_accepted')) {
-            setTimeout(() => {
-                modal.style.display = 'flex';
-            }, 1000);
+            setTimeout(showModal, 800);
+        } else {
+            unblockSite();
+            modal.style.display = 'none';
         }
         
         // Toggle details
@@ -1035,6 +1049,7 @@ const cookieManager = {
             localStorage.setItem('oh_cookies_accepted', 'true');
             localStorage.setItem('oh_cookies_date', new Date().toISOString());
             modal.style.display = 'none';
+            unblockSite();
             logger.info('✅ Cookies accepted');
         };
         
