@@ -1434,6 +1434,133 @@ section.fade-in {
     }
 }
 
+/* ===== COINS SECTION STYLING ===== */
+.coins {
+    padding: var(--spacing-2xl) 0;
+    background: linear-gradient(180deg, rgba(0, 212, 255, 0.03) 0%, transparent 50%, rgba(88, 101, 242, 0.03) 100%);
+}
+
+.coins-content {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--spacing-2xl);
+    align-items: center;
+}
+
+.coins-text {
+    text-align: left;
+    max-width: 900px;
+    margin: 0 auto;
+    padding-left: 3rem;
+}
+
+.coins-text h2 {
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    font-weight: 900;
+    margin-bottom: var(--spacing-lg);
+    letter-spacing: -0.02em;
+}
+
+.coins-lead {
+    font-size: clamp(1.15rem, 2.5vw, 1.4rem);
+    color: var(--text-secondary);
+    margin-bottom: var(--spacing-2xl);
+    line-height: var(--line-height-relaxed);
+    font-weight: 500;
+}
+
+.coins-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-xl);
+    margin-top: var(--spacing-2xl);
+}
+
+.info-box {
+    background: linear-gradient(135deg, rgba(88, 101, 242, 0.12), rgba(0, 212, 255, 0.08));
+    border: 2px solid rgba(0, 212, 255, 0.3);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-xl);
+    transition: all var(--transition-normal);
+    position: relative;
+    overflow: hidden;
+}
+
+.info-box::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+}
+
+.info-box:hover {
+    border-color: var(--neon-cyan);
+    box-shadow: var(--glow-md);
+    transform: translateY(-4px);
+}
+
+.info-box:hover::before {
+    opacity: 1;
+}
+
+.info-icon {
+    font-size: 2.5rem;
+    margin-bottom: var(--spacing-md);
+    display: inline-block;
+}
+
+.info-box h4 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--neon-cyan);
+    margin-bottom: var(--spacing-sm);
+}
+
+.info-box p {
+    color: var(--text-secondary);
+    line-height: var(--line-height-relaxed);
+    font-size: 0.95rem;
+}
+
+.coins-visual {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.coin-icon {
+    font-size: clamp(6rem, 15vw, 12rem);
+    color: var(--neon-cyan);
+    animation: float 4s ease-in-out infinite;
+    filter: drop-shadow(0 0 30px rgba(0, 212, 255, 0.4));
+}
+
+@media (min-width: 768px) {
+    .coins-content {
+        grid-template-columns: 1fr 300px;
+    }
+    
+    .coins-text {
+        padding-left: 4rem;
+    }
+}
+
+@media (max-width: 767px) {
+    .coins-text {
+        padding-left: 1rem;
+        text-align: center;
+    }
+    
+    .coins-info {
+        grid-template-columns: 1fr;
+    }
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 1440px) {
     :root {
