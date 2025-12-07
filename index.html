@@ -5,11 +5,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#23272a">
-    <title>OceanHub — Community Discord</title>
+    <title>OceanHub 🌊 — Community Discord per gli oceani</title>
+    <meta name="description" content="OceanHub è una community Discord attiva dal 2022. Eventi, giveaway, voice chat, Ocean Coins shop e molto altro. Unisciti a noi!">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://oceanhub.it/">
+    <meta property="og:title" content="OceanHub 🌊 — Community Discord per gli oceani">
+    <meta property="og:description" content="Community Discord attiva dal 2022. Eventi, giveaway, voice chat e Ocean Coins shop. Unisciti alla community!">
+    <meta property="og:image" content="https://oceanhub.it/assets/og-image.jpg">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://oceanhub.it/">
+    <meta property="twitter:title" content="OceanHub 🌊 — Community Discord">
+    <meta property="twitter:description" content="Community Discord attiva dal 2022. Eventi, giveaway, voice chat e Ocean Coins shop.">
+    <meta property="twitter:image" content="https://oceanhub.it/assets/og-image.jpg">
 
     <!-- Google Fonts - Inter per UI, Roboto per corpo testo -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 
     <!-- Stylesheet -->
@@ -24,6 +40,9 @@
     </style>
 </head>
 <body>
+    <!-- Skip Link per accessibilità -->
+    <a href="#main-content" class="skip-link" aria-label="Salta alla navigazione principale">Vai al contenuto</a>
+    
     <script>
         // Immediate debug: verify DOM is loading
         console.log('🌊 OceanHub HTML loaded at', new Date().toLocaleTimeString());
@@ -124,36 +143,55 @@
     </div>
 
     <!-- Navigation -->
-    <nav class="navbar">
+    <header class="navbar" role="banner">
         <div class="container">
             <div class="nav-brand neon-glow">
-                <i class="fas fa-water"></i> OceanHub
+                <span role="img" aria-label="onde">🌊</span> OceanHub
             </div>
-            <ul class="nav-menu">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#features">Caratteristiche</a></li>
-                <li><a href="#coins-shop">Coins</a></li>
-                <li><a href="#commands">Comandi</a></li>
-                <li><a href="#staff">Staff</a></li>
-                <!-- Discord Connect button: apre OAuth2 placeholder -->
-                <li><button id="discordConnectBtn" class="btn btn-neon-discord" title="Collega il tuo account Discord">
-                    <i class="fab fa-discord"></i> Connect
-                </button></li>
-                <li><a href="#join" class="btn-join">Unisciti</a></li>
-            </ul>
+            
+            <button id="navToggle" class="nav-toggle" aria-expanded="false" aria-controls="navMenu" aria-label="Apri menu di navigazione">
+                <span class="hamburger"></span>
+                <span class="hamburger"></span>
+                <span class="hamburger"></span>
+            </button>
+            
+            <nav role="navigation" aria-label="Navigazione principale">
+                <ul id="navMenu" class="nav-menu">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#features">Caratteristiche</a></li>
+                    <li><a href="#coins-shop">Coins</a></li>
+                    <li><a href="#commands">Comandi</a></li>
+                    <li><a href="#staff">Staff</a></li>
+                    <!-- Discord Connect button: apre OAuth2 placeholder -->
+                    <li><button id="discordConnectBtn" class="btn btn-neon-discord" title="Collega il tuo account Discord">
+                        <i class="fab fa-discord"></i> Connect
+                    </button></li>
+                    <li><a href="https://www.discord.gg/oceanhub" target="_blank" rel="noopener noreferrer" class="btn-join discord-cta" aria-label="Unisciti al server Discord OceanHub">
+                        <span role="img" aria-label="stretta di mano">🤝</span> Unisciti al Discord
+                    </a></li>
+                </ul>
+            </nav>
         </div>
-    </nav>
+    </header>
 
-    <!-- Hero Section -->
-    <section id="home" class="hero">
-        <div class="hero-content">
-            <h1 class="neon-title">Benvenuto in <span class="gradient-text neon-glow">OceanHub</span></h1>
-            <p>Una community Discord attiva dal 2022 — dove si parla di tutto, si gioca, si sta in VC e si fanno eventi!</p>
-            <div class="hero-buttons">
-                <a href="#join" class="btn btn-primary btn-neon">Entra nel Server</a>
-                <a href="#features" class="btn btn-secondary">Scopri di più</a>
+    <!-- Main Content -->
+    <main id="main-content">
+        <!-- Hero Section -->
+        <section id="home" class="hero" aria-labelledby="hero-title">
+            <div class="hero-content">
+                <h1 id="hero-title" class="neon-title">
+                    <span role="img" aria-label="onde">🌊</span> 
+                    Benvenuto in <span class="gradient-text neon-glow">OceanHub</span> 
+                    <span role="img" aria-label="pesce">🐟</span>
+                </h1>
+                <p>Una community Discord attiva dal 2022 — dove si parla di tutto, si gioca, si sta in VC e si fanno eventi! <span role="img" aria-label="corallo">🪸</span></p>
+                <div class="hero-buttons">
+                    <a href="https://www.discord.gg/oceanhub" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-neon discord-hero-cta" aria-label="Entra nel server Discord OceanHub">
+                        <span role="img" aria-label="globo">🌎</span> Entra nel Server Discord
+                    </a>
+                    <a href="#features" class="btn btn-secondary">Scopri di più</a>
+                </div>
             </div>
-        </div>
         <div class="hero-image">
             <!-- Floating card con animazione fluida -->
             <div class="floating-card neon-card">
@@ -172,54 +210,54 @@
         </svg>
     </section>
 
-    <!-- Features Section -->
-    <section id="features" class="features">
-        <div class="container">
-            <h2>Caratteristiche Principali</h2>
-            <div class="features-grid">
-                <div class="feature-card">
-                    <i class="fas fa-robot"></i>
-                    <h3>Bot Custom</h3>
-                    <p>Comandi automatizzati e funzioni dedicate per una gestione perfetta.</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-gift"></i>
-                    <h3>Eventi e Giveaway</h3>
-                    <p>Partecipa agli eventi regolari e vinci premi esclusivi!</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-headphones"></i>
-                    <h3>Voice Chat Attiva</h3>
-                    <p>Stai sempre in VC con la community per giocare e divertirsi.</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-handshake"></i>
-                    <h3>Partner e Sponsor</h3>
-                    <p>Sistema attivo di partnership e sponsorizzazioni aperto.</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-users"></i>
-                    <h3>Reclutamento Staff</h3>
-                    <p>Posti disponibili per nuovi staff — unisciti al team!</p>
-                </div>
-                <div class="feature-card">
-                    <i class="fas fa-coins"></i>
-                    <h3>Sistema Coins</h3>
-                    <p>Guadagna Ocean Coins e riscatta premi straordinari.</p>
+        <!-- Features Section -->
+        <section id="features" class="features" aria-labelledby="features-title">
+            <div class="container">
+                <h2 id="features-title">Caratteristiche Principali <span role="img" aria-label="foglia">🍃</span></h2>
+                <div class="features-grid" role="list">
+                    <article class="feature-card" role="listitem" tabindex="0">
+                        <div class="feature-emoji" role="img" aria-label="onde">🌊</div>
+                        <h3>Bot Custom</h3>
+                        <p>Comandi automatizzati e funzioni dedicate per una gestione perfetta.</p>
+                    </article>
+                    <article class="feature-card" role="listitem" tabindex="0">
+                        <div class="feature-emoji" role="img" aria-label="regalo">🎁</div>
+                        <h3>Eventi e Giveaway</h3>
+                        <p>Partecipa agli eventi regolari e vinci premi esclusivi!</p>
+                    </article>
+                    <article class="feature-card" role="listitem" tabindex="0">
+                        <div class="feature-emoji" role="img" aria-label="cuffie">🎧</div>
+                        <h3>Voice Chat Attiva</h3>
+                        <p>Stai sempre in VC con la community per giocare e divertirsi.</p>
+                    </article>
+                    <article class="feature-card" role="listitem" tabindex="0">
+                        <div class="feature-emoji" role="img" aria-label="stretta di mano">🤝</div>
+                        <h3>Partner e Sponsor</h3>
+                        <p>Sistema attivo di partnership e sponsorizzazioni aperto.</p>
+                    </article>
+                    <article class="feature-card" role="listitem" tabindex="0">
+                        <div class="feature-emoji" role="img" aria-label="persone">👥</div>
+                        <h3>Reclutamento Staff</h3>
+                        <p>Posti disponibili per nuovi staff — unisciti al team!</p>
+                    </article>
+                    <article class="feature-card" role="listitem" tabindex="0">
+                        <div class="feature-emoji" role="img" aria-label="monete">💰</div>
+                        <h3>Sistema Coins</h3>
+                        <p>Guadagna Ocean Coins e riscatta premi straordinari.</p>
+                    </article>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Ocean Coins Shop Section - Dettagliato -->
-    <section id="coins-shop" class="coins-shop">
-        <div class="container">
-            <h2 class="section-title"><i class="fas fa-coins" style="color: var(--neon-cyan);"></i> Shop Ocean Coins</h2>
+        <!-- Ocean Coins Shop Section - Dettagliato -->
+        <section id="coins-shop" class="coins-shop" aria-labelledby="shop-title">
+            <div class="container">
+                <h2 id="shop-title" class="section-title"><span role="img" aria-label="monete">💰</span> Shop Ocean Coins</h2>
             <p class="section-subtitle">Riscatta i tuoi premi accumulando coins negli eventi!</p>
             
             <!-- Discord Ranks Display -->
             <div class="discord-ranks-section">
-                <h3><i class="fas fa-medal" style="color: var(--neon-cyan);"></i> I Tuoi Ruoli Discord</h3>
+                <h3><span role="img" aria-label="medaglia">🏅</span> I Tuoi Ruoli Discord</h3>
                 <div id="discordRanksContainer" class="ranks-container">
                     <div class="rank-placeholder">Connetti Discord per vedere i tuoi ruoli</div>
                 </div>
@@ -239,7 +277,7 @@
                         <span class="balance-amount neon-glow" id="walletBalance">0</span>
                         <span class="balance-label">Ocean Coins</span>
                     </div>
-                    <p class="wallet-note"><i class="fas fa-lock" style="color: var(--neon-cyan);"></i> Connetti Discord per sincronizzare il tuo wallet</p>
+                    <p class="wallet-note"><span role="img" aria-label="lucchetto">🔒</span> Connetti Discord per sincronizzare il tuo wallet</p>
                     <button class="btn btn-secondary" id="btnCheckWallet">
                         <i class="fas fa-sync"></i> Aggiorna
                     </button>
@@ -262,27 +300,27 @@
         </div>
     </section>
 
-    <!-- Coins Info Section (semplificata) -->
-    <section id="coins" class="coins">
-        <div class="container wave-section">
-            <div class="coins-content">
-                <div class="coins-text">
-                    <h2 class="wave-sway neon-title"><i class="fas fa-coins" style="color: var(--neon-cyan);"></i> Ocean Coins</h2>
-                    <p class="wave-sway coins-lead">Accumula coins partecipando agli eventi e sblocca premi esclusivi dal nostro shop!</p>
-                    
-                    <div class="coins-info">
-                        <div class="info-box wave-sway neon-card">
-                            <div class="info-icon"><i class="fas fa-chart-line" style="color: var(--neon-cyan);"></i></div>
-                            <h4>Come guadagnarli</h4>
-                            <p>Partecipa a eventi, giveaway e attività della community per accumulare Ocean Coins.</p>
-                        </div>
-                        <div class="info-box wave-sway neon-card">
-                            <div class="info-icon"><i class="fas fa-gift" style="color: var(--neon-cyan);"></i></div>
-                            <h4>Come usarli</h4>
-                            <p>Riscatta premi esclusivi: ruoli custom, personalizzazioni profilo e molto altro.</p>
+        <!-- Coins Info Section (semplificata) -->
+        <section id="coins" class="coins" aria-labelledby="coins-title">
+            <div class="container wave-section">
+                <div class="coins-content">
+                    <div class="coins-text">
+                        <h2 id="coins-title" class="wave-sway neon-title"><span role="img" aria-label="monete">💰</span> Ocean Coins</h2>
+                        <p class="wave-sway coins-lead">Accumula coins partecipando agli eventi e sblocca premi esclusivi dal nostro shop! <span role="img" aria-label="onde">🌊</span></p>
+                        
+                        <div class="coins-info">
+                            <article class="info-box wave-sway neon-card">
+                                <div class="info-icon" role="img" aria-label="grafico">📈</div>
+                                <h3>Come guadagnarli</h3>
+                                <p>Partecipa a eventi, giveaway e attività della community per accumulare Ocean Coins.</p>
+                            </article>
+                            <article class="info-box wave-sway neon-card">
+                                <div class="info-icon" role="img" aria-label="regalo">🎁</div>
+                                <h3>Come usarli</h3>
+                                <p>Riscatta premi esclusivi: ruoli custom, personalizzazioni profilo e molto altro.</p>
+                            </article>
                         </div>
                     </div>
-                </div>
                 <div class="coins-visual">
                     <div class="coin-icon neon-glow">
                         <i class="fas fa-coins"></i>
@@ -403,20 +441,21 @@
             </div>
         </div>
     </section>
+    </main>
 
     <!-- Footer -->
-    <footer class="footer">
+    <footer class="footer" role="contentinfo">
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
-                    <h4>OceanHub</h4>
-                    <p>Una community Discord per giocare, stare insieme e divertirsi.</p>
-                    <a href="https://discord.gg/oceanhub" target="_blank" class="discord-badge">
-                        <i class="fab fa-discord"></i> Unisciti a Discord
+                    <h3><span role="img" aria-label="onde">🌊</span> OceanHub</h3>
+                    <p>Una community Discord per giocare, stare insieme e divertirsi. <span role="img" aria-label="pesce">🐟</span></p>
+                    <a href="https://www.discord.gg/oceanhub" target="_blank" rel="noopener noreferrer" class="discord-badge discord-footer-link" aria-label="Unisciti al Discord OceanHub">
+                        <span role="img" aria-label="globo">🌎</span> Unisciti a Discord
                     </a>
                 </div>
                 <div class="footer-section">
-                    <h4>Link Rapidi</h4>
+                    <h3>Link Rapidi</h3>
                     <ul>
                         <li><a href="#home">Home</a></li>
                         <li><a href="#features">Caratteristiche</a></li>
@@ -425,15 +464,16 @@
                     </ul>
                 </div>
                 <div class="footer-section">
-                    <h4>Comunità</h4>
+                    <h3>Comunità <span role="img" aria-label="corallo">🪸</span></h3>
                     <ul>
-                        <li><a href="https://discord.gg/oceanhub" target="_blank"><i class="fab fa-discord"></i> Discord Server</a></li>
-                        <li><a href="#coins-shop"><i class="fas fa-coins"></i> Shop Coins</a></li>
+                        <li><a href="https://www.discord.gg/oceanhub" target="_blank" rel="noopener noreferrer"><span role="img" aria-label="stretta di mano">🤝</span> Discord Server</a></li>
+                        <li><a href="#coins-shop"><span role="img" aria-label="monete">💰</span> Shop Coins</a></li>
+                        <li><a href="mailto:hello@oceanhub.it"><span role="img" aria-label="email">✉️</span> Contatti</a></li>
                     </ul>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2024 OceanHub — Tutti i diritti riservati. Made with <i class="fas fa-heart"></i> by OceanHub Team</p>
+                <p>&copy; 2025 OceanHub — Tutti i diritti riservati. Made with <span role="img" aria-label="cuore">❤️</span> by OceanHub Team</p>
             </div>
         </div>
     </footer>

@@ -1,9 +1,18 @@
 /*========================================
-   OCEANHUB - Script v2
-   Discord Integration + OAuth2 Demo
-   MOD Role Purchase + Banner Upload + Audio Effects
-   Modal + Shop + Wallet Management + Neon Glow
+   OCEANHUB - Script v3 🌊
+   Discord Integration + OAuth2 + Shop System
+   Accessibility + Performance + Analytics
+   Emoji Oceano: 🌊 🐟 🪸 🍃 🌎
    ========================================
+   
+   FEATURES:
+   - Mobile nav toggle con aria-controls
+   - Discord CTA tracking (gtag/plausible)
+   - Lazy loading images con fallback
+   - Cookie management con body blocking
+   - Shop Ocean Coins con 5 items
+   - MOD role purchase system
+   - Banner/Audio upload placeholders
    
    PRODUCTION SETUP GUIDE:
    
@@ -97,6 +106,85 @@ const logger = (() => {
 // ===== DEBUG MODE =====
 // Attiva con tasto D o parametro ?debug=1
 const debugMode = (() => {
+    const enableDebug = () => {
+        const devPanel = document.getElementById('devPanel');
+        if (devPanel) devPanel.style.display = 'block';
+        logger.info('Debug mode attivato');
+    };
+    
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('debug') === '1') enableDebug();
+    
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'D' || e.key === 'd') enableDebug();
+    });
+})();
+
+// ===== NAV TOGGLE MENU MOBILE =====
+const navToggle = document.getElementById('navToggle');
+const navMenu = document.getElementById('navMenu');
+
+if (navToggle && navMenu) {
+    navToggle.addEventListener('click', () => {
+        const isExpanded = navToggle.getAttribute('aria-expanded') === 'true';
+        navToggle.setAttribute('aria-expanded', !isExpanded);
+        navMenu.classList.toggle('active');
+        
+        logger.info(`Menu mobile ${!isExpanded ? 'aperto' : 'chiuso'}`);
+    });
+    
+    // Chiudi menu al click su link
+    navMenu.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+            navToggle.setAttribute('aria-expanded', 'false');
+            navMenu.classList.remove('active');
+        });
+    });
+}
+
+// ===== DISCORD CTA TRACKING =====
+const trackDiscordClick = (source) => {
+    logger.info(`Discord link cliccato: ${source}`);
+    
+    // Integra analytics (Google Analytics, Plausible, etc.)
+    if (typeof gtag !== 'undefined') {
+        gtag('event', 'discord_click', {
+            event_category: 'engagement',
+            event_label: source,
+            value: 1
+        });
+    }
+    
+    // Alternative: Plausible
+    if (typeof plausible !== 'undefined') {
+        plausible('Discord Click', { props: { source } });
+    }
+};
+
+// Traccia tutti i link Discord
+document.querySelectorAll('a[href*="discord.gg"], a[href*="discord.com"]').forEach(link => {
+    link.addEventListener('click', () => {
+        const source = link.classList.contains('discord-hero-cta') ? 'hero' :
+                      link.classList.contains('discord-cta') ? 'nav' :
+                      link.classList.contains('discord-footer-link') ? 'footer' : 'unknown';
+        trackDiscordClick(source);
+    });
+});
+
+// ===== LAZY LOADING IMAGES =====
+if ('loading' in HTMLImageElement.prototype) {
+    const images = document.querySelectorAll('img[loading="lazy"]');
+    logger.info(`Lazy loading nativo abilitato per ${images.length} immagini`);
+} else {
+    // Fallback per browser che non supportano lazy loading
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js';
+    document.body.appendChild(script);
+    logger.info('Lazy loading polyfill caricato');
+}
+
+// ===== DEBUG MODE ORIGINALE =====
+const debugModeOriginal = (() => {
     const enableDebug = () => {
         document.body.classList.add('debug');
         document.getElementById('devPanel')?.classList.add('active');
