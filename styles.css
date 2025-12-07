@@ -13,20 +13,20 @@
    ========================================*/
 
 :root {
-    /* ===== NEON PALETTE ===== */
-    /* Colori primari: Discord-inspired + neon edges */
+    /* ===== SOLLARY-INSPIRED PALETTE ===== */
+    /* Colori primari: più scuri e raffinati */
     --neon-blue: #5865f2;           /* Discord blue - primary */
     --neon-cyan: #00d4ff;            /* Neon cyan - glow accent */
     --neon-purple: #b300ff;          /* Neon purple - secondary */
     --neon-green: #57f287;           /* Neon green - success */
     --ocean-blue: #00A8E8;           /* Ocean blue - brand */
     
-    /* Neutrals */
-    --dark-bg: #0a0e27;              /* Very dark blue-black */
-    --card-bg: #1a1f3a;              /* Card background */
-    --border-color: #2c3e50;         /* Border + divider */
+    /* Neutrals - più scuri per effetto Sollary */
+    --dark-bg: #0a0a0f;              /* Quasi nero */
+    --card-bg: #12121a;              /* Card background molto scuro */
+    --border-color: rgba(255, 255, 255, 0.08);  /* Border sottile */
     --text-primary: #ffffff;         /* Main text */
-    --text-secondary: #b4bcc6;       /* Secondary text */
+    --text-secondary: #a0a0b0;       /* Secondary text meno intenso */
     
     /* ===== SPACING SCALE ===== */
     --spacing-xs: 0.25rem;           /* 4px */
@@ -91,7 +91,7 @@ html {
 }
 
 body {
-    background: linear-gradient(135deg, var(--dark-bg) 0%, #141829 100%);
+    background: linear-gradient(135deg, #0a0a0f 0%, #12121a 100%);
     color: var(--text-primary);
     font-family: var(--font-roboto);
     font-size: 16px;
@@ -542,13 +542,14 @@ section.fade-in {
 }
 
 .feature-card {
-    background: linear-gradient(135deg, rgba(88, 101, 242, 0.1), rgba(0, 212, 255, 0.05));
-    border: 2px solid rgba(0, 212, 255, 0.3);
+    background: linear-gradient(135deg, rgba(18, 18, 26, 0.6), rgba(18, 18, 26, 0.4));
+    border: 1px solid var(--border-color);
     border-radius: var(--radius-xl);
     padding: var(--spacing-2xl);
     transition: all var(--transition-normal);
     position: relative;
     overflow: hidden;
+    backdrop-filter: blur(10px);
 }
 
 .feature-card::before {
@@ -596,9 +597,10 @@ section.fade-in {
 
 /* Micro-glow on hover */
 .feature-card:hover {
-    border-color: var(--neon-cyan);
-    box-shadow: var(--glow-lg);
-    transform: translateY(-8px);
+    border-color: rgba(0, 212, 255, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), var(--glow-sm);
+    transform: translateY(-4px);
+    background: linear-gradient(135deg, rgba(18, 18, 26, 0.8), rgba(18, 18, 26, 0.6));
 }
 
 /* ===== WALLET & SHOP ===== */
@@ -775,14 +777,15 @@ section.fade-in {
 }
 
 .shop-item {
-    background: linear-gradient(135deg, rgba(88, 101, 242, 0.15), rgba(0, 212, 255, 0.05));
-    border: 1px solid rgba(0, 212, 255, 0.3);
+    background: linear-gradient(135deg, rgba(18, 18, 26, 0.8), rgba(18, 18, 26, 0.6));
+    border: 1px solid var(--border-color);
     border-radius: var(--radius-xl);
     padding: var(--spacing-lg);
     transition: all var(--transition-normal);
     cursor: pointer;
     position: relative;
     overflow: hidden;
+    backdrop-filter: blur(10px);
 }
 
 /* Shine effect on hover */
@@ -1345,13 +1348,14 @@ section.fade-in {
 }
 
 .info-box {
-    background: linear-gradient(135deg, rgba(88, 101, 242, 0.12), rgba(0, 212, 255, 0.08));
-    border: 2px solid rgba(0, 212, 255, 0.3);
+    background: linear-gradient(135deg, rgba(18, 18, 26, 0.8), rgba(18, 18, 26, 0.6));
+    border: 1px solid var(--border-color);
     border-radius: var(--radius-xl);
     padding: var(--spacing-xl);
     transition: all var(--transition-normal);
     position: relative;
     overflow: hidden;
+    backdrop-filter: blur(10px);
 }
 
 .info-box::before {
@@ -1367,9 +1371,9 @@ section.fade-in {
 }
 
 .info-box:hover {
-    border-color: var(--neon-cyan);
-    box-shadow: var(--glow-md);
-    transform: translateY(-4px);
+    border-color: rgba(0, 212, 255, 0.3);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
 }
 
 .info-box:hover::before {
@@ -1432,7 +1436,7 @@ section.fade-in {
 /* ===== REWARDS SECTION ===== */
 .rewards {
     padding: var(--spacing-section) var(--spacing-md);
-    background: linear-gradient(135deg, rgba(88, 101, 242, 0.05), rgba(0, 212, 255, 0.05));
+    background: linear-gradient(135deg, rgba(10, 10, 15, 0.5), rgba(18, 18, 26, 0.3));
 }
 
 .rewards h2 {
@@ -1455,8 +1459,8 @@ section.fade-in {
 }
 
 .step {
-    background: linear-gradient(135deg, rgba(88, 101, 242, 0.12), rgba(0, 212, 255, 0.08));
-    border: 2px solid rgba(0, 212, 255, 0.3);
+    background: linear-gradient(135deg, rgba(18, 18, 26, 0.8), rgba(18, 18, 26, 0.6));
+    border: 1px solid var(--border-color);
     border-radius: var(--radius-xl);
     padding: var(--spacing-xl) var(--spacing-2xl);
     transition: all var(--transition-normal);
@@ -1467,6 +1471,7 @@ section.fade-in {
     gap: var(--spacing-xl);
     align-items: center;
     min-height: 140px;
+    backdrop-filter: blur(10px);
 }
 
 .step::before {
@@ -1482,9 +1487,9 @@ section.fade-in {
 }
 
 .step:hover {
-    border-color: var(--neon-cyan);
-    box-shadow: var(--glow-md);
-    transform: translateY(-8px) scale(1.05);
+    border-color: rgba(0, 212, 255, 0.3);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
 }
 
 .step:hover::before {
@@ -1536,7 +1541,7 @@ section.fade-in {
 /* ===== STAFF SECTION ===== */
 .staff {
     padding: var(--spacing-section) var(--spacing-md);
-    background: linear-gradient(135deg, rgba(0, 212, 255, 0.05), rgba(139, 92, 246, 0.05));
+    background: linear-gradient(135deg, rgba(18, 18, 26, 0.3), rgba(10, 10, 15, 0.5));
 }
 
 .staff h2 {
@@ -1560,13 +1565,14 @@ section.fade-in {
 
 .staff-info,
 .partnership-info {
-    background: linear-gradient(135deg, rgba(88, 101, 242, 0.12), rgba(0, 212, 255, 0.08));
-    border: 2px solid rgba(0, 212, 255, 0.3);
+    background: linear-gradient(135deg, rgba(18, 18, 26, 0.8), rgba(18, 18, 26, 0.6));
+    border: 1px solid var(--border-color);
     border-radius: var(--radius-xl);
     padding: var(--spacing-2xl);
     transition: all var(--transition-normal);
     position: relative;
     overflow: hidden;
+    backdrop-filter: blur(10px);
 }
 
 .staff-info::before,
@@ -1584,9 +1590,9 @@ section.fade-in {
 
 .staff-info:hover,
 .partnership-info:hover {
-    border-color: var(--neon-cyan);
-    box-shadow: var(--glow-lg);
-    transform: translateY(-4px);
+    border-color: rgba(0, 212, 255, 0.3);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
 }
 
 .staff-info:hover::before,
@@ -1642,7 +1648,7 @@ section.fade-in {
 /* ===== STORY SECTION ===== */
 .story {
     padding: var(--spacing-section) var(--spacing-md);
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(88, 101, 242, 0.05));
+    background: linear-gradient(135deg, rgba(10, 10, 15, 0.5), rgba(18, 18, 26, 0.3));
 }
 
 .story h2 {
@@ -1677,20 +1683,21 @@ section.fade-in {
 }
 
 .timeline-item {
-    background: linear-gradient(135deg, rgba(88, 101, 242, 0.12), rgba(0, 212, 255, 0.08));
-    border: 2px solid rgba(0, 212, 255, 0.3);
+    background: linear-gradient(135deg, rgba(18, 18, 26, 0.8), rgba(18, 18, 26, 0.6));
+    border: 1px solid var(--border-color);
     border-radius: var(--radius-xl);
     padding: var(--spacing-xl);
     text-align: center;
     transition: all var(--transition-normal);
     position: relative;
     z-index: 1;
+    backdrop-filter: blur(10px);
 }
 
 .timeline-item:hover {
-    border-color: var(--neon-cyan);
-    box-shadow: var(--glow-lg);
-    transform: translateY(-8px);
+    border-color: rgba(0, 212, 255, 0.3);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
 }
 
 .timeline-marker {
