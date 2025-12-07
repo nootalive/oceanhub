@@ -71,8 +71,8 @@
     --radius-xl: 1rem;               /* 16px */
     
     /* ===== TYPOGRAPHY ===== */
-    --font-inter: 'Inter', sans-serif;
-    --font-roboto: 'Roboto', sans-serif;
+    --font-inter: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --font-roboto: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     --line-height-tight: 1.2;
     --line-height-normal: 1.5;
     --line-height-relaxed: 1.75;
@@ -96,6 +96,8 @@ body {
     font-size: 16px;
     line-height: var(--line-height-normal);
     overflow-x: hidden;
+    min-height: 100vh;
+    visibility: visible;
 }
 
 /* Prefers reduced motion: disabilita animazioni */
@@ -1371,13 +1373,65 @@ body.debug .debug-overlay {
 
 /* ===== SCROLL ANIMATIONS (IntersectionObserver) ===== */
 section {
-    opacity: 0;
-    transition: opacity var(--transition-slow), transform var(--transition-slow);
-    transform: translateY(20px);
+    opacity: 1 !important;
+    visibility: visible !important;
 }
 
 section.fade-in {
-    animation: fadeInUp var(--transition-slow) var(--ease-out) forwards;
+    animation: fadeInUp var(--transition-slow) var(--ease-out);
+}
+
+/* ===== WAVE SECTION LAYOUT + SWAY EFFECT ===== */
+/* Centera il blocco e limita larghezza per evitare testo troppo a sinistra.
+   Manteniamo padding per coerenza responsive. */
+.wave-section {
+    max-width: 900px;
+    margin: 0 auto;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    position: relative;
+}
+
+/* elementi che useremo per l'oscillazione */
+.wave-sway {
+    display: inline-block;
+    will-change: transform;
+    backface-visibility: hidden;
+}
+
+/* lieve ombra/blur quando in movimento per effetto "onda" */
+.wave-sway.sway-glow {
+    transition: box-shadow 220ms var(--transition-normal);
+    box-shadow: 0 0 18px rgba(0, 212, 255, 0.06);
+}
+
+/* fallback CSS animation per utenti senza JS o come degrade */
+@keyframes waveMove {
+    0% { transform: translateX(0); }
+    50% { transform: translateX(6px); }
+    100% { transform: translateX(0); }
+}
+
+.wave-sway.css-fallback {
+    animation: waveMove 4s ease-in-out infinite;
+}
+
+/* Rispetta preferenza ridotta motion: disabilita animazioni e trasform */
+@media (prefers-reduced-motion: reduce) {
+    .wave-sway,
+    .wave-sway.css-fallback {
+        animation: none !important;
+        transition: none !important;
+        transform: none !important;
+    }
+}
+
+/* Piccola regolazione del titolo per non essere troppo a sinistra su large screens */
+@media (min-width: 1200px) {
+    .wave-section {
+        max-width: 980px;
+        padding-left: 2.5rem;
+    }
 }
 
 /* ===== RESPONSIVE ===== */

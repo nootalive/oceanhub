@@ -15,8 +15,22 @@
     <!-- Stylesheet -->
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Fallback CSS se stili falliscono -->
+    <style>
+        body { display: block !important; opacity: 1 !important; }
+        h1, h2, h3, h4, h5, h6, p, span, a, button { display: block !important; color: #fff !important; }
+        .container { display: block !important; }
+    </style>
 </head>
 <body>
+    <script>
+        // Immediate debug: verify DOM is loading
+        console.log('🌊 OceanHub HTML loaded at', new Date().toLocaleTimeString());
+        document.documentElement.style.opacity = '1';
+        document.body.style.opacity = '1';
+    </script>
+    
     <!-- Dev Panel (nascosto, si attiva con ?debug=1 o tasto D) -->
     <div id="devPanel" class="dev-panel">
         <div class="dev-header">
@@ -227,18 +241,18 @@
 
     <!-- Coins Info Section (semplificata) -->
     <section id="coins" class="coins">
-        <div class="container">
+        <div class="container wave-section">
             <div class="coins-content">
                 <div class="coins-text">
-                    <h2>Ocean Coins <i class="fas fa-gem"></i></h2>
-                    <p>La valuta esclusiva di OceanHub — guadagnala partecipando agli eventi e riscatta fantastici premi!</p>
+                    <h2 class="wave-sway">Ocean Coins <i class="fas fa-gem"></i></h2>
+                    <p class="wave-sway">La valuta esclusiva di OceanHub — guadagnala partecipando agli eventi e riscatta fantastici premi!</p>
                     
                     <div class="coins-info">
-                        <div class="info-box">
+                        <div class="info-box wave-sway">
                             <h4>📈 Come si ottengono?</h4>
                             <p>Partecipando agli eventi regolari, ai giveaway e alle attività della community.</p>
                         </div>
-                        <div class="info-box">
+                        <div class="info-box wave-sway">
                             <h4>🎁 A cosa servono?</h4>
                             <p>A riscattare premi esclusivi dallo shop del server — ruoli, personalizzazioni e molto altro!</p>
                         </div>
@@ -255,22 +269,22 @@
 
     <!-- Commands Section -->
     <section id="commands" class="commands">
-        <div class="container">
-            <h2>Comandi Principali</h2>
+        <div class="container wave-section">
+            <h2 class="wave-sway">Comandi Principali</h2>
             <div class="commands-grid">
-                <div class="command-card">
+                <div class="command-card wave-sway">
                     <div class="command-header">
                         <code>/coins shop</code>
                     </div>
                     <p>Mostra la lista completa dei premi riscattabili con i tuoi Ocean Coins.</p>
                 </div>
-                <div class="command-card">
+                <div class="command-card wave-sway">
                     <div class="command-header">
                         <code>/coins wallet</code>
                     </div>
                     <p>Verifica quanti Ocean Coins hai accumulato nel tuo portafoglio.</p>
                 </div>
-                <div class="command-card">
+                <div class="command-card wave-sway">
                     <div class="command-header">
                         <code>🎫︲ticket PERKS</code>
                     </div>
