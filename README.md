@@ -514,6 +514,93 @@ const response = await fetch('https://bot.oceanhub.com/api/coins/shop', {
 </script>
 ```
 
+## 🧪 Test Features (Local Demo)
+
+### Test MOD Role Purchase
+
+1. Apri http://localhost:8000?debug=1
+2. Scorri a Shop
+3. Trova "🛡️ Ruolo Moderator" (2000 coins)
+4. Clicca "Riscatta"
+5. Accetta termini
+6. Clicca "Invia Richiesta"
+7. Verifica:
+   - ✅ Coins diminuiscono da 1250 → 0 (non sufficiente, errore)
+   - ✅ Dev panel mostra "purchase attempts" log
+   - ✅ Console mostra "Ticket submitted: TICKET-xxx"
+   - ✅ Mock assegna il ruolo (demo)
+
+**Production**: Sostituisci mockAPI.submitTicket con POST /api/assign-role
+
+### Test Banner Upload & Preview
+
+1. Scorri a "Personalizza il Profilo"
+2. Sezione "📸 Banner Personalizzato"
+3. Clicca file input, seleziona immagine
+4. Clicca "Anteprima" → vedi immagine con blur neon
+5. Clicca "Applica Banner" → salvo in localStorage
+6. Apri DevTools → Application → localStorage → oh_banner
+7. Verifica:
+   - ✅ Dati salvati (url, name, size, appliedAt)
+   - ✅ Data URL dentro (no server call in demo)
+   - ✅ Preview scompare e riappare su toggle
+
+**Production**: Invia POST /api/upload → CDN/S3, ricevi url, salva nel DB
+
+### Test Audio Effects & Mute
+
+1. Sezione "🔊 Effetto Audio Personalizzato"
+2. Select preset: "Chime", "Pop", "Ding"
+3. Clicca "Preview" → ascolta tono sintetizzato
+4. Clicca checkbox "Silenzia effetti sonori"
+5. Clicca "Preview" nuovamente → niente suono (muted)
+6. Refresh pagina → checkbox rimane checked (localStorage)
+7. Verifica:
+   - ✅ Mute state persisted in localStorage key oh_audioMuted
+   - ✅ Audio file upload accetta solo mp3/ogg/wav
+   - ✅ Dev panel mostra "Playing audio" log
+   - ✅ prefers-reduced-motion è rispettato (CSS media query)
+
+**Production**: File upload POST /api/upload-audio, storage in S3/Cloudinary
+
+### Test Discord OAuth Demo
+
+1. Clicca "Connect Discord" (navbar o CTA section)
+2. Console mostra OAuth URL placeholder
+3. Aggiungi ?oauth=success all'URL: http://localhost:8000?oauth=success
+4. Refresh → "Discord connected: OceanLover#1234"
+5. "Sync Roles" button diventa enabled
+6. Clicca → carica ruoli mock
+7. Verifica:
+   - ✅ Ruoli visualizzati con colore Discord
+   - ✅ Dev panel mostra "Roles synced" log
+   - ✅ Rank badges appaiono
+
+**Production**: Implementa backend OAuth callback, salva token in session/JWT
+
+### Test Wallet & Balance Animation
+
+1. Clicca "Riscatta" su item qualsiasi (che costa meno di 1250)
+2. Invia richiesta
+3. Scriven balance animato:
+   - ✅ Numero scala e cambia colore (cyan → verde)
+   - ✅ Glow pulsa durante animazione
+   - ✅ localStorage aggiornato (key: oh_wallet)
+   - ✅ Nuovo saldo mostrato
+4. Refresh pagina → saldo persiste (localStorage)
+
+### Test Debug Mode & Dev Panel
+
+1. Premi **D** → Attiva debug mode
+2. Vedi:
+   - ✅ Grid overlay neon 20px
+   - ✅ Dev panel in basso a destra (purple neon)
+   - ✅ Tutti i log: shop load, wallet fetch, role sync, audio play
+3. Clicca "Cancella Log" → dev panel svuotato
+4. Premi **D** di nuovo → debug mode disabilitato
+
+Alternativamente: http://localhost:8000?debug=1
+
 ## 🐛 Troubleshooting
 
 **Q: Il modal non si apre quando clicco "Riscatta"**
