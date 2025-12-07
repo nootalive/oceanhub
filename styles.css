@@ -324,6 +324,7 @@ code {
 .hero-content {
     z-index: 10;
     animation: fadeInUp var(--transition-slow);
+    padding-left: var(--spacing-2xl);
 }
 
 .hero-content h1 {
@@ -730,6 +731,16 @@ section.fade-in {
     font-size: 0.9rem;
     text-transform: uppercase;
     letter-spacing: 1px;
+}
+
+.wallet-note {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin: var(--spacing-md) 0;
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: rgba(0, 212, 255, 0.05);
+    border-left: 3px solid var(--neon-cyan);
+    border-radius: var(--radius-sm);
 }
 
 /* ===== SHOP ===== */
