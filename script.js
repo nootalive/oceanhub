@@ -3,7 +3,62 @@
    Discord Integration + OAuth2 Demo
    MOD Role Purchase + Banner Upload + Audio Effects
    Modal + Shop + Wallet Management + Neon Glow
-   ========================================*/
+   ========================================
+   
+   PRODUCTION SETUP GUIDE:
+   
+   1. MOD ROLE ASSIGNMENT (Replace mockAPI.submitTicket)
+      POST /api/assign-role
+      Headers: { 'Authorization': 'Bearer BOT_TOKEN', 'Content-Type': 'application/json' }
+      Body: { userId: string, guildId: string, roleId: string, cost: number }
+      Response: { ok: true, roleAssigned: true, newBalance: number }
+      
+      Example cURL:
+      curl -X POST https://your-api.com/api/assign-role \
+        -H "Authorization: Bearer YOUR_BOT_TOKEN" \
+        -H "Content-Type: application/json" \
+        -d '{"userId":"123","guildId":"456","roleId":"789","cost":2000}'
+   
+   2. BANNER UPLOAD (Replace bannerManager.setupBannerUpload)
+      POST /api/upload (multipart/form-data)
+      Headers: { 'Authorization': 'Bearer USER_TOKEN' }
+      Body: { file: File, userId: string }
+      Response: { ok: true, url: string, filename: string }
+      
+      Storage: Use S3, Cloudinary, or similar CDN
+      Cache headers: Cache-Control: public, max-age=31536000
+   
+   3. AUDIO UPLOAD (Replace audioManager.setupAudioControls)
+      POST /api/upload-audio (multipart/form-data)
+      Headers: { 'Authorization': 'Bearer USER_TOKEN' }
+      Body: { file: File, userId: string, maxDuration: 10 }
+      Response: { ok: true, url: string, duration: number }
+      
+      Format support: mp3, ogg, wav (validate server-side)
+      Max file: 10MB, Max duration: 10 seconds
+   
+   4. ENVIRONMENT VARIABLES (.env - DO NOT COMMIT)
+      DISCORD_CLIENT_ID=your_client_id_here
+      DISCORD_CLIENT_SECRET=your_client_secret_here (backend only!)
+      DISCORD_BOT_TOKEN=your_bot_token_here (backend only!)
+      DISCORD_WEBHOOK_ID=webhook_id_here
+      DISCORD_WEBHOOK_TOKEN=webhook_token_here
+      API_BASE_URL=https://your-api.com
+      UPLOAD_CDN_URL=https://cdn.your-site.com
+   
+   5. OAUTH2 CALLBACK (Backend handler)
+      Route: POST /oauth/callback
+      Receive: { code: string }
+      Exchange code for token via Discord API
+      Store in session/DB
+      Redirect user back to client with session token
+   
+   6. WEBHOOK FOR TICKETS (Replace POST /api/ticket)
+      Send to Discord webhook when ticket submitted
+      Embed format: { title, description, fields, color, timestamp }
+      Fields: [{ name: 'Prize', value: 'Item name' }, { name: 'Cost', value: 'coins' }]
+      
+========================================*/
 
 // ===== LOGGER UTILITY =====
 // Dual output: console (colored) + dev panel (DOM)
