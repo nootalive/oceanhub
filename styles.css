@@ -26,7 +26,7 @@
     --card-bg: #12121a;              /* Card background molto scuro */
     --border-color: rgba(255, 255, 255, 0.08);  /* Border sottile */
     --text-primary: #ffffff;         /* Main text */
-    --text-secondary: #a0a0b0;       /* Secondary text meno intenso */
+    --text-secondary: #b8b8c8;       /* Secondary text - contrasto WCAG AA migliorato */
     
     /* ===== SPACING SCALE ===== */
     --spacing-xs: 0.25rem;           /* 4px */
@@ -843,6 +843,7 @@ section.fade-in {
 /* Micro-glow on hover + Performance */
 .feature-card {
     will-change: transform, box-shadow;
+    /* Card già accessibili con tabindex="0" in HTML */
 }
 
 .feature-card:hover,
