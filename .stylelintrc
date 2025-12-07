@@ -1,0 +1,26 @@
+{
+  "extends": "stylelint-config-standard",
+  "rules": {
+    "at-rule-no-unknown": [
+      true,
+      {
+        "ignoreAtRules": ["supports"]
+      }
+    ],
+    "selector-pseudo-element-no-unknown": null,
+    "property-no-unknown": [
+      true,
+      {
+        "ignoreProperties": ["composes"]
+      }
+    ],
+    "indentation": 4,
+    "max-line-length": null,
+    "block-opening-brace-space-before": "always",
+    "declaration-colon-space-after": "always",
+    "no-duplicate-selectors": true,
+    "no-empty-source": null,
+    "selector-list-comma-newline-after": "always",
+    "color-no-invalid-hex": true
+  }
+}
