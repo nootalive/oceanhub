@@ -1,436 +1,190 @@
-# OceanHub - Sito Web Ufficiale
+# 🌊 OceanHub - Community Discord
 
-Sito web della community Discord **OceanHub**. Design pulito, accessibile, con sistema cookie consent GDPR-compliant e shop Ocean Coins integrato.
+Sito web ufficiale della community Discord OceanHub. Design pulito, accessibile e performante con sistema Ocean Coins integrato.
 
-## 🌊 Features
+## ✨ Features
 
-- **Design Pulito**: Ispirato a sollary.net, minime emoji, focus su estetica
-- **Accessibilità**: Skip-link, ARIA labels, focus states WCAG AA
-- **Cookie Consent**: Banner GDPR con categorie Necessary/Analytics/Marketing
-- **Shop Ocean Coins**: Sistema premi visualizzato dinamicamente da JSON
-- **Responsive**: Mobile-first, ottimizzato per tutti i dispositivi
-- **Performance**: Lazy loading, animazioni ridotte per prefers-reduced-motion
-- **SEO**: Meta tags, Open Graph, JSON-LD schema
+- ✅ **Design fluido** con sfumature oceano (cyan/teal/turquoise)
+- ✅ **Responsive** mobile-first con hamburger menu
+- ✅ **Accessibilità WCAG AA**: skip-link, focus states, ARIA labels
+- ✅ **Cookie consent GDPR** con gating Analytics/Marketing
+- ✅ **Shop Ocean Coins** con loader dinamico da JSON
+- ✅ **SEO completo**: Open Graph, Twitter Cards, JSON-LD
+- ✅ **Performance**: CSS/JS minificati (-29% CSS, -47% JS)
+- ✅ **No emoji eccessivi**: solo SVG Heroicons outline
 
 ## 📁 Struttura File
 
 ```
-oceanhub-sito/
-├── index.html              # Homepage principale
-├── styles.css              # Stili completi con variabili CSS
-├── script.js               # JavaScript principale
-├── cookies.js              # Gestione cookie consent
+oceanhub/
+├── index.html              # Pagina principale
+├── styles.css              # CSS completo (dev)
+├── styles.min.css          # CSS minificato (prod) -29%
+├── script.js               # JavaScript principale (dev)
+├── script.min.js           # JS minificato (prod) -47%
+├── cookies.js              # Gestione cookie consent (dev)
+├── cookies.min.js          # Cookie JS minificato (prod)
+├── cookie-policy.html      # Policy cookie
 ├── privacy.html            # Privacy policy
-├── cookie-policy.html      # Cookie policy
-├── data/
-│   └── shop.json          # Dati shop Ocean Coins
 ├── assets/
 │   ├── logo.svg           # Logo OceanHub
-│   ├── hero-illustration.svg # Illustrazione hero
-│   └── og-image.png       # (DA CREARE) Immagine Open Graph
+│   ├── og-image.svg       # Open Graph image 1200x630
+│   └── hero-illustration.svg
+├── data/
+│   └── shop.json          # Prodotti shop Ocean Coins
 └── README.md              # Questo file
 ```
 
-## 🚀 Quick Start
+## 🚀 Deploy su GitHub Pages
 
-### 1. Setup Locale
+### Setup Iniziale
 
-```bash
-# Clone o scarica il repository
-git clone https://github.com/yourusername/oceanhub-sito.git
-cd oceanhub-sito
+1. **Push su GitHub**:
+   ```bash
+   git add -A
+   git commit -m "feat: sito completo con minificazione e OG image"
+   git push origin feature/fix-mod-banner-audio
+   ```
 
-# Apri con Live Server (VS Code) o altro server locale
-```
+2. **Merge su main**:
+   ```bash
+   git checkout main
+   git merge feature/fix-mod-banner-audio
+   git push origin main
+   ```
 
-### 2. Personalizza Contenuti
+3. **Abilita GitHub Pages**:
+   - Vai su Settings → Pages
+   - Source: Deploy from branch `main`
+   - Folder: `/ (root)`
+   - Save
 
-#### Testi e Link Discord
+4. **Verifica deployment**:
+   - URL: `https://nootalive.github.io/oceanhub/`
+   - Attendi 1-2 minuti per build
 
-Cerca nel codice e sostituisci:
-- `https://www.discord.gg/oceanhub` → il tuo link Discord
-- Testi nelle sezioni (Hero, Features, About) → personalizza come preferisci
+## 🎨 Personalizzazione
 
-#### Shop Ocean Coins
+### Colori
 
-Modifica `data/shop.json`:
-
-```json
-{
-  "items": [
-    {
-      "name": "Ruolo VIP",
-      "description": "Descrizione premio",
-      "price": 5000
-    }
-  ]
-}
-```
-
-#### Colori e Palette
-
-Modifica variabili in `styles.css` (linee 1-70):
+Modifica variabili CSS in `styles.css`:
 
 ```css
 :root {
-    --primary: #0370a6;       /* Blu oceano principale */
-    --accent: #ffb84d;        /* Arancione accento */
-    --bg-light: #f7fafc;      /* Background chiaro */
-    /* ... */
+    --ocean-1: #0891b2;  /* Cyan oceano */
+    --ocean-2: #06b6d4;  /* Cyan chiaro */
+    --ocean-3: #22d3ee;  /* Turquoise */
+    --accent: #f59e0b;   /* Arancio */
 }
 ```
-
-### 3. Aggiungi Immagini
-
-#### Open Graph Image (Obbligatorio per SEO)
-
-Crea `assets/og-image.png` (1200x630px) con:
-- Logo OceanHub
-- Testo "OceanHub Community"
-- Colori brand (#0370a6, #ffb84d)
-
-Tool consigliati:
-- [Canva](https://www.canva.com/) - template "Facebook Post"
-- [Figma](https://www.figma.com/) - design da zero
-
-#### Logo e Hero
-
-I file SVG placeholder sono già presenti in `assets/`. Sostituiscili con design personalizzati se desiderato.
-
-## 🔧 Configurazione Analytics
-
-### Google Analytics 4
-
-1. **Ottieni Tracking ID**:
-   - Vai su [Google Analytics](https://analytics.google.com/)
-   - Crea proprietà GA4
-   - Copia il Measurement ID (formato `G-XXXXXXXXXX`)
-
-2. **Aggiungi al sito**:
-   
-   In `cookies.js` (linea ~185), decomment e sostituisci:
-
-   ```javascript
-   loadAnalytics() {
-       const script = document.createElement('script');
-       script.async = true;
-       script.src = 'https://www.googletagmanager.com/gtag/js?id=G-YOUR-ID-HERE';
-       document.head.appendChild(script);
-
-       window.dataLayer = window.dataLayer || [];
-       function gtag(){dataLayer.push(arguments);}
-       gtag('js', new Date());
-       gtag('config', 'G-YOUR-ID-HERE');
-       window.gtag = gtag;
-   }
-   ```
-
-3. **Verifica**:
-   - Apri sito, accetta cookie Analytics
-   - Vai su GA4 → Realtime
-   - Verifica che la tua visita venga tracciata
-
-### Plausible Analytics (Alternativa Privacy-Friendly)
-
-```html
-<!-- In index.html, prima di </head> -->
-<script defer data-domain="yourdomain.com" src="https://plausible.io/js/script.js"></script>
-```
-
-## 🌐 Deploy su GitHub Pages
-
-### Setup Repository
-
-```bash
-# Inizializza git (se non fatto)
-git init
-git add .
-git commit -m "chore: initial site scaffold"
-
-# Crea repository su GitHub e push
-git remote add origin https://github.com/USERNAME/oceanhub-sito.git
-git branch -M main
-git push -u origin main
-```
-
-### Abilita GitHub Pages
-
-1. Vai su repository → **Settings** → **Pages**
-2. Source: **Deploy from a branch**
-3. Branch: `main` / `root`
-4. Salva
-
-Il sito sarà disponibile su: `https://USERNAME.github.io/oceanhub-sito/`
-
-### Custom Domain (Opzionale)
-
-1. Acquista dominio (es. Namecheap, CloudFlare)
-2. Aggiungi DNS records:
-   ```
-   Type: A
-   Name: @
-   Value: 185.199.108.153
-          185.199.109.153
-          185.199.110.153
-          185.199.111.153
-   
-   Type: CNAME
-   Name: www
-   Value: USERNAME.github.io
-   ```
-3. GitHub → Settings → Pages → Custom domain → `yourdomain.com`
-4. Abilita **Enforce HTTPS**
-
-## ✅ Checklist Pre-Deploy
 
 ### Contenuti
 
-- [ ] Link Discord aggiornati
-- [ ] Testi personalizzati (Hero, About, Footer)
-- [ ] Shop items aggiornati in `shop.json`
-- [ ] Email contatto aggiornata (privacy/cookie policy)
+- **Testi**: modifica direttamente `index.html`
+- **Shop prodotti**: edita `data/shop.json`
+- **Policy**: aggiorna `privacy.html` e `cookie-policy.html`
 
 ### Immagini
 
-- [ ] `assets/og-image.png` creata (1200x630px)
-- [ ] Logo personalizzato (opzionale)
-- [ ] Hero illustration personalizzata (opzionale)
+Sostituisci in `assets/`:
+- `og-image.svg` - Open Graph (1200x630px)
+- `logo.svg` - Logo navbar
+- `hero-illustration.svg` - Illustrazione hero
 
-### SEO
-
-- [ ] Meta description personalizzata in `index.html`
-- [ ] OG image path corretto
-- [ ] Sitemap.xml generata (opzionale)
-
-### Analytics & Cookie
-
-- [ ] Google Analytics ID configurato (se usato)
-- [ ] Cookie consent testato
-- [ ] Privacy/Cookie Policy personalizzate
-
-### Accessibility
-
-- [ ] Test keyboard navigation (Tab, Enter, Esc)
-- [ ] Test screen reader (NVDA/JAWS)
-- [ ] Contrast ratio >= 4.5:1 (WCAG AA)
-
-### Performance
-
-- [ ] Lighthouse score >= 90 (Performance, Accessibility)
-- [ ] Immagini ottimizzate (WebP/AVIF se possibile)
-- [ ] CSS/JS minificati per produzione
-
-## 🧪 Testing
-
-### Lighthouse (Chrome DevTools)
-
-```bash
-# Apri DevTools → Lighthouse
-# Run audit: Performance, Accessibility, Best Practices, SEO
-# Target: >= 90 su tutti
-```
-
-### Keyboard Navigation
-
-- **Tab**: navigazione tra link/bottoni
-- **Enter**: attivazione link
-- **Esc**: chiude menu mobile
-- Skip-link visibile su **Tab** iniziale
+## 🔒 Privacy & Cookie
 
 ### Cookie Consent
 
-1. **Apri sito in incognito**
-2. Verifica banner appare dopo 1s
-3. Clicca "Personalizza" → verifica toggles funzionano
-4. Salva preferenze → ricarica → banner non appare
-5. **Console**: verifica `loadAnalytics()` chiamata solo se consenso dato
+Il sistema è già configurato in `cookies.js`:
 
-### Responsive
+- **Necessary**: Sempre attivi (preferenze utente)
+- **Analytics**: Google Analytics (G-XXXXXXXXXX) - richiede consenso
+- **Marketing**: Widget esterni - richiede consenso
 
-Test breakpoints:
-- **Mobile**: 375px (iPhone SE)
-- **Tablet**: 768px (iPad)
-- **Desktop**: 1280px+
+### Configurare Google Analytics
 
-### Shop Loading
+1. Ottieni tracking ID da Google Analytics
+2. Sostituisci `G-XXXXXXXXXX` in `cookies.js` (linee 306, 312)
+3. Verifica gating: Analytics non si carica senza consenso
 
-1. **Apri Console**
-2. Verifica `shop.json` caricato correttamente
-3. Items visualizzati nella sezione "Ocean Coins & Shop"
+## ⚡ Performance
 
-## 🎨 Customizzazione Avanzata
+### Minificazione
 
-### Aggiungere Nuove Sezioni
+File minificati già generati:
+- `styles.min.css`: 14.3 KB (-29%)
+- `script.min.js`: 6.1 KB (-47%)
+- `cookies.min.js`: Minificato
 
-```html
-<!-- In index.html, dentro <main> -->
-<section id="nuova-sezione" class="section">
-    <div class="container">
-        <div class="section-header">
-            <h2 class="section-title">Titolo Sezione</h2>
-            <p class="section-description">Descrizione</p>
-        </div>
-        
-        <!-- Contenuto -->
-    </div>
-</section>
-```
+### Ottimizzazioni Implementate
 
-### Aggiungere Animazioni
+✅ Lazy loading immagini  
+✅ Font preconnect (Google Fonts)  
+✅ CSS/JS minificati  
+✅ SVG invece di PNG per icone  
+✅ Glassmorphism con backdrop-filter
 
-```css
-/* In styles.css */
-@keyframes slideIn {
-    from { transform: translateX(-100%); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
-}
+### Lighthouse Target
 
-.mio-elemento {
-    animation: slideIn 0.5s ease-out;
-}
+- **Performance**: ≥ 90
+- **Accessibility**: ≥ 95
+- **Best Practices**: ≥ 90
+- **SEO**: ≥ 95
 
-/* Rispetta prefers-reduced-motion */
-@media (prefers-reduced-motion: reduce) {
-    .mio-elemento {
-        animation: none;
-    }
-}
-```
+## ♿ Accessibilità
 
-### Discord Server Widget
+### Implementato
 
-In `script.js` (linea ~270), decomment:
+✅ Skip link visibile al focus  
+✅ Focus states WCAG AA (outline 3px)  
+✅ ARIA labels completi  
+✅ Semantic HTML5  
+✅ Contrasto WCAG AA  
+✅ Keyboard navigation  
 
-```javascript
-function loadDiscordWidget() {
-    const widgetContainer = document.getElementById('discord-widget');
-    if (!widgetContainer) return;
-    
-    widgetContainer.innerHTML = `
-        <iframe 
-            src="https://discord.com/widget?id=YOUR_SERVER_ID&theme=light" 
-            width="350" 
-            height="500" 
-            allowtransparency="true" 
-            frameborder="0"
-        ></iframe>
-    `;
-}
-```
+### Test Checklist
 
-Poi in `index.html`, aggiungi:
+- [ ] Naviga con solo TAB
+- [ ] Focus visibile ovunque
+- [ ] Screen reader (NVDA/JAWS)
+- [ ] Lighthouse ≥ 95
+- [ ] Contrasto ≥ 4.5:1
 
-```html
-<div id="discord-widget"></div>
-```
+## 🧪 Testing
 
-## 🛠️ Ottimizzazione Produzione
-
-### Minify CSS/JS
+### Test Locale
 
 ```bash
-# Installa tools
-npm install -g csso-cli terser
-
-# Minify
-csso styles.css -o styles.min.css
-terser script.js -o script.min.js -c -m
-terser cookies.js -o cookies.min.js -c -m
-
-# Aggiorna link in index.html
-<link rel="stylesheet" href="./styles.min.css">
-<script src="./cookies.min.js"></script>
-<script src="./script.min.js"></script>
+python -m http.server 8080
+# Apri http://localhost:8080
 ```
 
-### Ottimizzare Immagini
+### Test Cookie Gating
 
-```bash
-# WebP
-cwebp og-image.png -o og-image.webp -q 85
-
-# AVIF (massima compressione)
-avif og-image.png -o og-image.avif -q 65
-```
-
-Usa `<picture>` per fallback:
-
-```html
-<picture>
-    <source srcset="og-image.avif" type="image/avif">
-    <source srcset="og-image.webp" type="image/webp">
-    <img src="og-image.png" alt="OceanHub">
-</picture>
-```
-
-## 📊 Monitoraggio
-
-### Google Search Console
-
-1. Vai su [Search Console](https://search.google.com/search-console)
-2. Aggiungi proprietà con il tuo dominio
-3. Verifica ownership (meta tag o file HTML)
-4. Monitora indicizzazione e performance
-
-### Plausible Dashboard
-
-Se usi Plausible:
-- Dashboard: `https://plausible.io/yourdomain.com`
-- Metriche: pageviews, bounce rate, referrers, goals
+1. Apri in incognito
+2. DevTools → Network
+3. Rifiuta Analytics
+4. Verifica gtag NON caricato
+5. Accetta → verifica caricamento
 
 ## 🐛 Troubleshooting
 
-### Cookie Banner Non Appare
+**Navbar non apre**: Check `script.js` e classe `.active`  
+**Sfondo statico**: Verifica variabili CSS ocean  
+**Shop vuoto**: Valida `shop.json` (JSONLint)  
+**Analytics manca**: Check tracking ID e consenso
 
-1. Controlla Console per errori
-2. Verifica `cookies.js` caricato correttamente
-3. Cancella localStorage: `localStorage.clear()`
-4. Ricarica in incognito
+## 📊 Analytics
 
-### Shop Non Carica
+Eventi tracciati:
+- `discord-nav`, `discord-hero`, `discord-coins`, `discord-community`
 
-1. Verifica `data/shop.json` path corretto
-2. Console → Network → verifica 200 OK per shop.json
-3. Valida JSON su [jsonlint.com](https://jsonlint.com/)
+## 🔗 Link Utili
 
-### Analytics Non Traccia
-
-1. Verifica consenso cookie dato (Console log)
-2. Controlla GA4 Measurement ID corretto
-3. DevTools → Network → cerca `google-analytics`
-4. GA4 Realtime dovrebbe mostrare visite
-
-### Menu Mobile Non Chiude
-
-1. Verifica `script.js` caricato
-2. Console → cerca errori JS
-3. Test: click fuori menu dovrebbe chiudere
-
-## 📝 Changelog
-
-### v1.0.0 - 2024-12-07
-
-- ✅ Scaffold iniziale sito completo
-- ✅ Cookie consent GDPR-compliant
-- ✅ Shop Ocean Coins dinamico
-- ✅ Privacy e Cookie Policy
-- ✅ Design responsive accessibile
-- ✅ Integrazioni Discord tracking
-
-## 🤝 Contributi
-
-Per suggerimenti o bug:
-1. Apri issue su GitHub
-2. Contattaci su Discord: [discord.gg/oceanhub](https://www.discord.gg/oceanhub)
-
-## 📄 Licenza
-
-© 2024 OceanHub. Tutti i diritti riservati.
-
-Il codice del sito è rilasciato sotto licenza MIT. I contenuti e i brand sono proprietà di OceanHub.
+- **Discord**: https://www.discord.gg/oceanhub
+- **GitHub**: https://github.com/nootalive/oceanhub
+- **Live**: https://nootalive.github.io/oceanhub/
 
 ---
 
-**Fatto con ❤️ dalla community OceanHub**
-
-Per supporto o domande: [discord.gg/oceanhub](https://www.discord.gg/oceanhub)
+**Sviluppato con ❤️ per OceanHub** 🌊

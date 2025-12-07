@@ -829,9 +829,30 @@ footer::before {
     }
 }
 
+/* Focus states WCAG AA compliant */
 :focus-visible {
     outline: 3px solid var(--ocean-1);
-    outline-offset: 2px;
+    outline-offset: 3px;
+    border-radius: var(--radius-sm);
+}
+
+a:focus-visible,
+button:focus-visible {
+    outline: 3px solid var(--ocean-1);
+    outline-offset: 3px;
+    box-shadow: 0 0 0 6px rgba(8, 145, 178, 0.2);
+}
+
+.btn:focus-visible {
+    outline: 3px solid var(--ocean-deep);
+    outline-offset: 3px;
+    box-shadow: 0 0 0 6px rgba(8, 145, 178, 0.25);
+}
+
+/* Skip link enhanced */
+.skip-link:focus {
+    outline: 3px solid white;
+    box-shadow: 0 0 0 6px var(--ocean-1);
 }
 
 /* ===== UTILITIES ===== */
