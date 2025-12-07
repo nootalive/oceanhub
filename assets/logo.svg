@@ -1,0 +1,20 @@
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Wave Logo -->
+  <g transform="translate(100, 100)">
+    <!-- Main Wave Circle -->
+    <circle cx="0" cy="0" r="85" fill="#0370a6" opacity="0.1"/>
+    
+    <!-- Wave Layers -->
+    <path d="M-60 -10 Q-30 -30 0 -10 T60 -10" stroke="#0370a6" stroke-width="8" fill="none" stroke-linecap="round"/>
+    <path d="M-60 10 Q-30 -10 0 10 T60 10" stroke="#0891ce" stroke-width="8" fill="none" stroke-linecap="round"/>
+    <path d="M-60 30 Q-30 10 0 30 T60 30" stroke="#0370a6" stroke-width="6" fill="none" stroke-linecap="round" opacity="0.6"/>
+    
+    <!-- Center Dot -->
+    <circle cx="0" cy="0" r="6" fill="#ffb84d"/>
+    
+    <!-- Text -->
+    <text x="0" y="60" font-family="Inter, sans-serif" font-size="20" font-weight="700" fill="#0370a6" text-anchor="middle">
+      OH
+    </text>
+  </g>
+</svg>

@@ -1,0 +1,100 @@
+{
+  "version": "1.0",
+  "lastUpdate": "2024-12-07",
+  "currency": "Ocean Coins",
+  "items": [
+    {
+      "id": "role-vip",
+      "name": "Ruolo VIP",
+      "description": "Ruolo esclusivo con badge e colore personalizzato",
+      "price": 5000,
+      "category": "roles",
+      "available": true
+    },
+    {
+      "id": "role-legend",
+      "name": "Ruolo Legend",
+      "description": "Ruolo leggendario con vantaggi speciali",
+      "price": 10000,
+      "category": "roles",
+      "available": true
+    },
+    {
+      "id": "custom-emoji",
+      "name": "Emoji Personalizzata",
+      "description": "Carica una tua emoji personalizzata sul server",
+      "price": 3000,
+      "category": "customization",
+      "available": true
+    },
+    {
+      "id": "nickname-change",
+      "name": "Cambio Nickname",
+      "description": "Cambia il tuo nickname senza limiti per 30 giorni",
+      "price": 1500,
+      "category": "utility",
+      "available": true
+    },
+    {
+      "id": "voice-priority",
+      "name": "Voice Priority",
+      "description": "Accesso prioritario ai canali vocali durante eventi",
+      "price": 2500,
+      "category": "utility",
+      "available": true
+    },
+    {
+      "id": "nitro-monthly",
+      "name": "Discord Nitro (1 mese)",
+      "description": "Abbonamento Discord Nitro per 1 mese",
+      "price": 15000,
+      "category": "premium",
+      "available": true
+    },
+    {
+      "id": "steam-game",
+      "name": "Gioco Steam (fino a 20€)",
+      "description": "Scegli un gioco Steam del valore fino a 20€",
+      "price": 12000,
+      "category": "premium",
+      "available": true
+    },
+    {
+      "id": "server-boost",
+      "name": "Server Boost Reward",
+      "description": "Bonus coins mensile per chi boosta il server",
+      "price": 0,
+      "category": "special",
+      "available": false,
+      "note": "Solo per Booster"
+    },
+    {
+      "id": "event-host",
+      "name": "Ospita un Evento",
+      "description": "Organizza e gestisci un evento personalizzato",
+      "price": 8000,
+      "category": "special",
+      "available": true
+    },
+    {
+      "id": "custom-room",
+      "name": "Canale Vocale Personalizzato",
+      "description": "Canale vocale temporaneo con nome e limite personalizzati (48h)",
+      "price": 4000,
+      "category": "utility",
+      "available": true
+    }
+  ],
+  "categories": {
+    "roles": "Ruoli Esclusivi",
+    "customization": "Personalizzazione",
+    "utility": "Utilità",
+    "premium": "Premi Premium",
+    "special": "Speciali"
+  },
+  "redemptionInfo": {
+    "method": "ticket",
+    "channel": "ticket PERKS",
+    "process": "Apri un ticket specificando il premio desiderato. Lo staff verificherà il tuo saldo e procederà con il riscatto."
+  }
+}
