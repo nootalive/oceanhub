@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <!-- Meta tags -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#23272a">
+    <title>OceanHub — Community Discord</title>
+
+    <!-- Google Fonts - Inter per UI, Roboto per corpo testo -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Dev Panel (nascosto, si attiva con ?debug=1 o tasto D) -->
+    <div id="devPanel" class="dev-panel">
+        <div class="dev-header">
+            <h3>🐛 Dev Panel</h3>
+            <button id="closeDevPanel" class="close-btn">&times;</button>
+        </div>
+        <div id="devLog" class="dev-log"></div>
+        <button id="clearDevLog" class="dev-btn">Cancella Log</button>
+    </div>
+
+    <!-- Debug Overlay (griglia e info viewport) -->
+    <div id="debugOverlay" class="debug-overlay"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <div class="nav-brand neon-glow">
+                <i class="fas fa-water"></i> OceanHub
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#features">Caratteristiche</a></li>
+                <li><a href="#coins-shop">Coins</a></li>
+                <li><a href="#commands">Comandi</a></li>
+                <li><a href="#staff">Staff</a></li>
+                <!-- Discord Connect button: apre OAuth2 placeholder -->
+                <li><button id="discordConnectBtn" class="btn btn-neon-discord" title="Collega il tuo account Discord">
+                    <i class="fab fa-discord"></i> Connect
+                </button></li>
+                <li><a href="#join" class="btn-join">Unisciti</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1 class="neon-title">Benvenuto in <span class="gradient-text neon-glow">OceanHub</span></h1>
+            <p>Una community Discord attiva dal 2022 — dove si parla di tutto, si gioca, si sta in VC e si fanno eventi!</p>
+            <div class="hero-buttons">
+                <a href="#join" class="btn btn-primary btn-neon">Entra nel Server</a>
+                <a href="#features" class="btn btn-secondary">Scopri di più</a>
+            </div>
+        </div>
+        <div class="hero-image">
+            <!-- Floating card con animazione fluida -->
+            <div class="floating-card neon-card">
+                <i class="fas fa-water"></i>
+            </div>
+        </div>
+        <!-- Onda SVG animata al fondo dell'hero (più morbida con requestAnimationFrame) -->
+        <svg class="hero-wave" viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M0,50 Q300,0 600,50 T1200,50 L1200,120 L0,120 Z" fill="url(#waveGradient)"></path>
+            <defs>
+                <linearGradient id="waveGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" style="stop-color:#5865f2;stop-opacity:0.4" />
+                    <stop offset="100%" style="stop-color:#57f287;stop-opacity:0.2" />
+                </linearGradient>
+            </defs>
+        </svg>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2>Caratteristiche Principali</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-robot"></i>
+                    <h3>Bot Custom</h3>
+                    <p>Comandi automatizzati e funzioni dedicate per una gestione perfetta.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-gift"></i>
+                    <h3>Eventi e Giveaway</h3>
+                    <p>Partecipa agli eventi regolari e vinci premi esclusivi!</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-headphones"></i>
+                    <h3>Voice Chat Attiva</h3>
+                    <p>Stai sempre in VC con la community per giocare e divertirsi.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-handshake"></i>
+                    <h3>Partner e Sponsor</h3>
+                    <p>Sistema attivo di partnership e sponsorizzazioni aperto.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-users"></i>
+                    <h3>Reclutamento Staff</h3>
+                    <p>Posti disponibili per nuovi staff — unisciti al team!</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-coins"></i>
+                    <h3>Sistema Coins</h3>
+                    <p>Guadagna Ocean Coins e riscatta premi straordinari.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Ocean Coins Shop Section - Dettagliato -->
+    <section id="coins-shop" class="coins-shop">
+        <div class="container">
+            <h2 class="section-title">Shop Ocean Coins 💰</h2>
+            <p class="section-subtitle">Riscatta i tuoi premi accumulando coins negli eventi!</p>
+            
+            <!-- Discord Ranks Display -->
+            <div class="discord-ranks-section">
+                <h3>🎖️ I Tuoi Ruoli Discord</h3>
+                <div id="discordRanksContainer" class="ranks-container">
+                    <div class="rank-placeholder">Connetti Discord per vedere i tuoi ruoli</div>
+                </div>
+                <button id="syncRolesBtn" class="btn btn-neon" disabled title="Sincronizza ruoli dal server">
+                    <i class="fas fa-sync"></i> Sincronizza Ruoli
+                </button>
+            </div>
+
+            <!-- Wallet Info -->
+            <div class="wallet-info">
+                <div class="wallet-card neon-card">
+                    <div class="wallet-header">
+                        <i class="fas fa-wallet"></i>
+                        <h3>Il Tuo Wallet</h3>
+                    </div>
+                    <div class="wallet-balance">
+                        <span class="balance-amount neon-glow" id="walletBalance">1250</span>
+                        <span class="balance-label">Ocean Coins</span>
+                    </div>
+                    <button class="btn btn-secondary" id="btnCheckWallet">
+                        <i class="fas fa-sync"></i> Aggiorna
+                    </button>
+                </div>
+            </div>
+
+            <!-- Shop Grid -->
+            <div class="shop-header">
+                <h3>Premi Disponibili</h3>
+                <div class="shop-filters">
+                    <button class="filter-btn active" data-filter="all">Tutti</button>
+                    <button class="filter-btn" data-filter="role">Ruoli</button>
+                    <button class="filter-btn" data-filter="custom">Personalizzati</button>
+                </div>
+            </div>
+
+            <div class="shop-grid" id="shopGrid">
+                <!-- Items generati via JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Coins Info Section (semplificata) -->
+    <section id="coins" class="coins">
+        <div class="container">
+            <div class="coins-content">
+                <div class="coins-text">
+                    <h2>Ocean Coins <i class="fas fa-gem"></i></h2>
+                    <p>La valuta esclusiva di OceanHub — guadagnala partecipando agli eventi e riscatta fantastici premi!</p>
+                    
+                    <div class="coins-info">
+                        <div class="info-box">
+                            <h4>📈 Come si ottengono?</h4>
+                            <p>Partecipando agli eventi regolari, ai giveaway e alle attività della community.</p>
+                        </div>
+                        <div class="info-box">
+                            <h4>🎁 A cosa servono?</h4>
+                            <p>A riscattare premi esclusivi dallo shop del server — ruoli, personalizzazioni e molto altro!</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="coins-visual">
+                    <div class="coin-icon">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Commands Section -->
+    <section id="commands" class="commands">
+        <div class="container">
+            <h2>Comandi Principali</h2>
+            <div class="commands-grid">
+                <div class="command-card">
+                    <div class="command-header">
+                        <code>/coins shop</code>
+                    </div>
+                    <p>Mostra la lista completa dei premi riscattabili con i tuoi Ocean Coins.</p>
+                </div>
+                <div class="command-card">
+                    <div class="command-header">
+                        <code>/coins wallet</code>
+                    </div>
+                    <p>Verifica quanti Ocean Coins hai accumulato nel tuo portafoglio.</p>
+                </div>
+                <div class="command-card">
+                    <div class="command-header">
+                        <code>🎫︲ticket PERKS</code>
+                    </div>
+                    <p>Apri un ticket per riscattare il tuo premio preferito dallo shop.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Rewards Section -->
+    <section id="rewards" class="rewards">
+        <div class="container">
+            <h2>Riscattare Premi</h2>
+            <div class="rewards-steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <h3>Accumula Coins</h3>
+                    <p>Partecipa agli eventi della community</p>
+                </div>
+                <div class="step-arrow"><i class="fas fa-arrow-right"></i></div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <h3>Visita lo Shop</h3>
+                    <p>Usa <code>/coins shop</code> per vedere i premi</p>
+                </div>
+                <div class="step-arrow"><i class="fas fa-arrow-right"></i></div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <h3>Apri un Ticket</h3>
+                    <p>Riscatta nel canale 🎫︲PERKS</p>
+                </div>
+                <div class="step-arrow"><i class="fas fa-arrow-right"></i></div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <h3>Goditi il Premio!</h3>
+                    <p>Il tuo premio è tuo!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Staff Section -->
+    <section id="staff" class="staff">
+        <div class="container">
+            <h2>Unisciti al Team</h2>
+            <div class="staff-content">
+                <div class="staff-info">
+                    <h3>Cerchiamo Nuovi Staff!</h3>
+                    <ul class="staff-benefits">
+                        <li><i class="fas fa-check"></i> Sistema di coins interno esclusivo</li>
+                        <li><i class="fas fa-check"></i> Ruoli e permessi speciali</li>
+                        <li><i class="fas fa-check"></i> Opportunità di crescita nel team</li>
+                        <li><i class="fas fa-check"></i> Accesso a canali riservati</li>
+                        <li><i class="fas fa-check"></i> Premi e benefit esclusivi</li>
+                    </ul>
+                    <p class="staff-cta">Sei interessato? Contatta lo staff nel server!</p>
+                </div>
+                <div class="partnership-info">
+                    <h3>Partnership e Sponsor</h3>
+                    <p>OceanHub è aperto a collaborazioni e partnership strategiche. Se rappresenti un progetto o un brand interessante, contattaci per discutere di possibili opportunità di sponsorizzazione e collaborazione!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Story Section -->
+    <section id="story" class="story">
+        <div class="container">
+            <h2>La Nostra Storia</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-marker">2022</div>
+                    <h3>La Nascita</h3>
+                    <p>OceanHub nasce come una piccola community Discord con una grande visione.</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-marker">Ricreazione</div>
+                    <h3>Rinascita</h3>
+                    <p>Dopo una pausa, OceanHub torna più forte che mai con nuove funzionalità e una community ancora più vivace.</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-marker">Oggi</div>
+                    <h3>Il Presente</h3>
+                    <p>Una comunità attiva con eventi regolari, bot custom, e un sistema di rewards che premia chi partecipa.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section id="join" class="cta">
+        <div class="container">
+            <h2>Pronto a Unirti a OceanHub?</h2>
+            <p>Entra nella nostra community Discord e scopri cosa ti aspetta!</p>
+            <div class="cta-buttons">
+                <!-- OAuth2 Placeholder: Sostituisci YOUR_CLIENT_ID con il vero client Discord -->
+                <!-- Endpoint OAuth: https://discord.com/api/oauth2/authorize?client_id=YOUR_CLIENT_ID&redirect_uri=https%3A%2F%2Fyour-site%2Foauth&response_type=code&scope=identify%20guilds -->
+                <button id="oauthDiscordBtn" class="btn btn-neon-discord btn-large">
+                    <i class="fab fa-discord"></i> Accedi con Discord
+                </button>
+                <a href="https://discord.gg/oceanhub" class="btn btn-primary btn-large" target="_blank">
+                    <i class="fab fa-discord"></i> Entra nel Server
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>OceanHub</h4>
+                    <p>Una community Discord per giocare, stare insieme e divertirsi.</p>
+                    <a href="https://discord.gg/oceanhub" target="_blank" class="discord-badge">
+                        <i class="fab fa-discord"></i> Unisciti a Discord
+                    </a>
+                </div>
+                <div class="footer-section">
+                    <h4>Link Rapidi</h4>
+                    <ul>
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#features">Caratteristiche</a></li>
+                        <li><a href="#coins-shop">Shop Coins</a></li>
+                        <li><a href="#commands">Comandi</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Comunità</h4>
+                    <ul>
+                        <li><a href="https://discord.gg/oceanhub" target="_blank"><i class="fab fa-discord"></i> Discord Server</a></li>
+                        <li><a href="#coins-shop"><i class="fas fa-coins"></i> Shop Coins</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 OceanHub — Tutti i diritti riservati. Made with <i class="fas fa-heart"></i> by OceanHub Team</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal Ticket PERKS -->
+    <div id="ticketModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🎫 Riscatta il tuo premio</h2>
+                <button id="closeModal" class="close-btn">&times;</button>
+            </div>
+            <form id="ticketForm" class="ticket-form">
+                <div class="form-group">
+                    <label for="ticketPrize">Premio selezionato:</label>
+                    <input type="text" id="ticketPrize" readonly placeholder="Nessun premio selezionato">
+                </div>
+                <div class="form-group">
+                    <label for="ticketCost">Costo (Ocean Coins):</label>
+                    <input type="number" id="ticketCost" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="ticketNotes">Note aggiuntive (opzionale):</label>
+                    <textarea id="ticketNotes" placeholder="Es: preferenza personalizzazione, dettagli ruolo, ecc."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="ticketTerms" required>
+                        <span>Accetto i termini di riscatto</span>
+                    </label>
+                </div>
+                <div class="modal-buttons">
+                    <button type="button" class="btn btn-secondary" id="cancelTicket">Annulla</button>
+                    <button type="submit" class="btn btn-primary">Invia Richiesta</button>
+                </div>
+            </form>
+            <div id="ticketResult" class="ticket-result" style="display:none;"></div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="script.js"></script>
+</body>
+</html>
