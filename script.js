@@ -9,7 +9,7 @@
     // ===== NAVIGATION TOGGLE =====
     function initNavigation() {
         const navToggle = document.querySelector('.nav-toggle');
-        const navMenu = document.querySelector('.nav-menu');
+        const navMenu = document.getElementById('nav-menu');
         const navLinks = document.querySelectorAll('.nav-link');
 
         if (!navToggle || !navMenu) return;
@@ -18,12 +18,14 @@
         navToggle.addEventListener('click', () => {
             const isExpanded = navToggle.getAttribute('aria-expanded') === 'true';
             navToggle.setAttribute('aria-expanded', !isExpanded);
+            navMenu.classList.toggle('active', !isExpanded);
         });
 
         // Close menu on link click
         navLinks.forEach(link => {
             link.addEventListener('click', () => {
                 navToggle.setAttribute('aria-expanded', 'false');
+                navMenu.classList.remove('active');
             });
         });
 
@@ -31,6 +33,7 @@
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && navToggle.getAttribute('aria-expanded') === 'true') {
                 navToggle.setAttribute('aria-expanded', 'false');
+                navMenu.classList.remove('active');
                 navToggle.focus();
             }
         });
@@ -39,6 +42,7 @@
         document.addEventListener('click', (e) => {
             if (!navToggle.contains(e.target) && !navMenu.contains(e.target)) {
                 navToggle.setAttribute('aria-expanded', 'false');
+                navMenu.classList.remove('active');
             }
         });
     }
