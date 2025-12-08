@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Pagina non trovata | notadev</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* 404 Page Specific Styles */
+        .error-page {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--color-bg-primary);
+            position: relative;
+            overflow: hidden;
+            padding: var(--spacing-xl);
+        }
+
+        .error-container {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+        }
+
+        .error-code {
+            font-size: clamp(8rem, 20vw, 16rem);
+            font-weight: 800;
+            line-height: 1;
+            background: var(--gradient-text);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: var(--spacing-lg);
+            letter-spacing: -0.05em;
+            animation: glowPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% {
+                filter: drop-shadow(0 0 20px rgba(168, 85, 247, 0.3));
+            }
+            50% {
+                filter: drop-shadow(0 0 40px rgba(168, 85, 247, 0.6));
+            }
+        }
+
+        .error-title {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            color: var(--color-text-primary);
+            margin-bottom: var(--spacing-md);
+            letter-spacing: -0.02em;
+        }
+
+        .error-description {
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            color: var(--color-text-secondary);
+            line-height: 1.7;
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .error-actions {
+            display: flex;
+            gap: var(--spacing-md);
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-home {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.25rem 2.5rem;
+            font-size: 1.125rem;
+            font-weight: 700;
+            background: var(--gradient-primary);
+            color: var(--color-text-primary);
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-glow);
+            transition: var(--transition-base);
+            text-decoration: none;
+        }
+
+        .btn-home:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 0 80px rgba(168, 85, 247, 0.7);
+        }
+
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.25rem 2.5rem;
+            font-size: 1.125rem;
+            font-weight: 700;
+            background: transparent;
+            color: var(--color-text-primary);
+            border: 2px solid var(--color-border-bright);
+            border-radius: var(--radius-md);
+            transition: var(--transition-base);
+            text-decoration: none;
+        }
+
+        .btn-back:hover {
+            border-color: var(--color-accent-primary);
+            transform: translateY(-4px);
+        }
+
+        /* Background decorative elements */
+        .error-bg-orb {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        .orb-1 {
+            top: -200px;
+            left: -200px;
+            background: radial-gradient(circle, rgba(168, 85, 247, 0.4), transparent 70%);
+        }
+
+        .orb-2 {
+            bottom: -200px;
+            right: -200px;
+            background: radial-gradient(circle, rgba(236, 72, 153, 0.4), transparent 70%);
+        }
+
+        @media (max-width: 768px) {
+            .error-actions {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .btn-home,
+            .btn-back {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="error-page">
+        <!-- Background decorative elements -->
+        <div class="error-bg-orb orb-1"></div>
+        <div class="error-bg-orb orb-2"></div>
+
+        <!-- Error content -->
+        <div class="error-container">
+            <div class="error-code">404</div>
+            <h1 class="error-title">Pagina non trovata</h1>
+            <p class="error-description">
+                Ops! La pagina che stai cercando non esiste o è stata spostata.<br>
+                Torna alla home per scoprire i miei progetti.
+            </p>
+            <div class="error-actions">
+                <a href="index.html" class="btn-home">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                    <span>Torna alla home</span>
+                </a>
+                <a href="javascript:history.back()" class="btn-back">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                    <span>Indietro</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
